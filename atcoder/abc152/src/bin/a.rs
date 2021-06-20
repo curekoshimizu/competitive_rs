@@ -1,13 +1,6 @@
-use proconio::{fastout, input};
+use argio::argio;
 
-#[fastout]
-fn main() {
-    input! {
-        n: u32,
-        m: u32,
-    }
-
-    let ans = if n == m { "Yes" } else { "No" };
-
-    println!("{}", ans);
+#[argio]
+fn main(n: u32, m: u32) -> &str {
+    if n == m { "Yes" } else { "No" }
 }
