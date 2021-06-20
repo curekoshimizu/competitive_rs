@@ -1,13 +1,16 @@
-use proconio::{input, fastout};
+use proconio::{fastout, input};
 
 #[fastout]
 fn main() {
-
     input! {
-        n: u32,
-        mut m: u32,
+        a: u32,
+        b: u32,
     }
 
+    let c = u32::min(a, b);
+    let d = u32::max(a, b);
 
-    todo!()
+    for _ in 0..d {
+        print!("{}", c);
+    }
 }
