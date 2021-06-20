@@ -1,0 +1,6 @@
+[build]
+target-dir = "target"
+
+[cargo-new]
+name = "curekoshimizu"
+email = "shugo@xxxmanabe.sakura.ne.jp"
