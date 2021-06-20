@@ -4,7 +4,7 @@ use proconio::{input, fastout};
 fn main() {
 
     input! {
-        n: u32,
+        _n: u32,
         mut m: u32,
     }
 

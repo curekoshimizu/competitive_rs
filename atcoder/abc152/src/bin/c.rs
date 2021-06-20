@@ -1,13 +1,13 @@
-use proconio::{input, fastout};
+use argio::argio;
 
-#[fastout]
-fn main() {
+#[argio]
+fn main(n: u32, a: [u32; n]) -> u32 {
+    let mut min = u32::max_value();
 
-    input! {
-        n: u32,
-        mut m: u32,
-    }
-
-
-    todo!()
+    a.into_iter()
+        .map(|x| {
+            min = u32::min(min, x);
+            (x <= min) as u32
+        })
+        .sum()
 }
