@@ -3,14 +3,10 @@ use argio::argio;
 #[argio]
 fn main(s: String) -> String {
     s.chars()
-        .map(|s| {
-            if s == '1' {
-                return "9".to_string();
-            } else if s == '9' {
-                return "1".to_string();
-            } else {
-                return s.to_string();
-            }
+        .map(|s| match s {
+            '1' => '9',
+            '9' => '1',
+            _ => s,
         })
         .collect()
 }
