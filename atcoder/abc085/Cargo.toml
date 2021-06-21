@@ -1,0 +1,14 @@
+[package]
+name = "abc085"
+version = "0.1.0"
+edition = "2018"
+
+# dependencies added to new project
+[dependencies]
+proconio = { version = "0.4.3", features = ["derive"] }
+argio = "0.2.0"
+# target = "x86_64-unknown-linux-musl"
+
+[profile.release]
+lto = true
+panic = 'abort'
