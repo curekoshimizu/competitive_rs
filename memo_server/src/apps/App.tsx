@@ -10,7 +10,7 @@ import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 
 import AppBar, { Links } from './AppBar';
 import IssueList from './IssueList';
-import ProblemPreview from './ProblemPreview';
+import { ProblemAnsPreview, ProblemPreview } from './ProblemPreview';
 
 interface ProblemPreviewPageProp {
   contest: string;
@@ -27,6 +27,22 @@ const ProblemPreviewPage = () => {
 
   return (
     <ProblemPreview
+      contest={contest}
+      numProblems={Number(numProblems)}
+      problem={problem}
+    />
+  );
+};
+
+const ProblemAnsPage = () => {
+  const { contest, problem, numProblems } = useParams<ProblemPreviewPageProp>();
+
+  if (!(contest && problem && numProblems)) {
+    return <></>;
+  }
+
+  return (
+    <ProblemAnsPreview
       contest={contest}
       numProblems={Number(numProblems)}
       problem={problem}
@@ -61,6 +77,11 @@ const App: React.FC = () => (
                 component={ProblemPreviewPage}
                 exact
                 path="/preview/:contest/:problem/:numProblems"
+              />
+              <Route
+                component={ProblemAnsPage}
+                exact
+                path="/answer/:contest/:problem/:numProblems"
               />
             </Switch>
           </main>
