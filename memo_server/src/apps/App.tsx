@@ -9,7 +9,7 @@ import {
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 
 import AppBar, { Links } from './AppBar';
-import IssueList from './IssueList';
+import ProblemList from './ProblemList';
 import { ProblemAnsPreview, ProblemPreview } from './ProblemPreview';
 
 interface ProblemPreviewPageProp {
@@ -59,7 +59,7 @@ const App: React.FC = () => (
           <main>
             <AppBar links={links} />
             <Switch>
-              <Route component={IssueList} exact path="/" />
+              <Route component={ProblemList} exact path="/" />
               <Route
                 component={ProblemPreviewPage}
                 exact

@@ -16,10 +16,11 @@ async fn atcoder() -> impl Responder {
     manifest_dir.pop();
     manifest_dir.push("atcoder");
 
-    let atcoder_list: Vec<String> = read_dir(&manifest_dir)
+    let mut atcoder_list: Vec<String> = read_dir(&manifest_dir)
         .unwrap()
         .map(|entry| entry.unwrap().file_name().to_string_lossy().to_string())
-        .collect();
+        .collect::<Vec<String>>();
+    atcoder_list.sort();
 
     HttpResponse::Ok().json(AtCoder {
         contests: atcoder_list,
