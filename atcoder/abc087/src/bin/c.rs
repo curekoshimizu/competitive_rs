@@ -1,3 +1,5 @@
+// keywords : zip
+
 use argio::argio;
 
 #[argio]
