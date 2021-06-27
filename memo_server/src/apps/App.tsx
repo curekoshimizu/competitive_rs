@@ -8,6 +8,7 @@ import {
 } from '@material-ui/styles';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 
+import AppBar, { Links } from './AppBar';
 import IssueList from './IssueList';
 import ProblemPreview from './ProblemPreview';
 
@@ -44,6 +45,8 @@ const theme = createMuiTheme({
   },
 });
 
+const links: Links[] = [{ path: '/', title: 'Competitive Programming' }];
+
 const App: React.FC = () => (
   <BrowserRouter>
     <StylesProvider injectFirst>
@@ -51,6 +54,7 @@ const App: React.FC = () => (
         <StyledThemeProvider theme={theme}>
           <CssBaseline />
           <main>
+            <AppBar links={links} />
             <Switch>
               <Route component={IssueList} exact path="/" />
               <Route
