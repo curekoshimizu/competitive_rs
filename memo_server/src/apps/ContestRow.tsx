@@ -1,16 +1,33 @@
+import { useState } from 'react';
+
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import useAsyncEffect from 'use-async-effect';
 
 import PreviewProblemButton from './PreviewProblemButton';
 
-const range = (n: number): number[] => [...Array(n).keys()];
+interface ContestInfo {
+  name: string;
+  solved: boolean;
+  keywords: string[];
+}
 
 interface ContestRowProp {
   contest: string;
-  numProblems: number;
 }
 
-const ContestRow: React.FC<ContestRowProp> = ({ contest, numProblems }) => {
+const ContestRow: React.FC<ContestRowProp> = ({ contest }) => {
+  const [contestInfo, setContestInfo] = useState<ContestInfo[]>([]);
+  useAsyncEffect(async () => {
+    const data = await fetch(`/api/v1/atcoder/${contest}`);
+    const ret = (await data.json()) as ContestInfo[];
+
+    ret.sort((a, b) => {
+      return a.name.charCodeAt(0) - b.name.charCodeAt(0);
+    });
+    setContestInfo(ret);
+  }, []);
+
   return (
     <Box display="flex" justifyContent="center" m={1} p={1}>
       <Box width={300}>
@@ -19,17 +36,10 @@ const ContestRow: React.FC<ContestRowProp> = ({ contest, numProblems }) => {
         </Typography>
       </Box>
       <Box display="flex" width="100%">
-        {range(numProblems).map((idx) => {
-          const code: number = 'a'.charCodeAt(0);
-          const problem = String.fromCharCode(code + idx);
-
+        {contestInfo.map(({ name }) => {
           return (
-            <Box key={idx} width={300}>
-              <PreviewProblemButton
-                contest={contest}
-                numProblems={numProblems}
-                problem={problem}
-              />
+            <Box key={name} width={300}>
+              <PreviewProblemButton contest={contest} problem={name} />
             </Box>
           );
         })}

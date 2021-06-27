@@ -15,39 +15,26 @@ import { ProblemAnsPreview, ProblemPreview } from './ProblemPreview';
 interface ProblemPreviewPageProp {
   contest: string;
   problem: string;
-  numProblems: string;
 }
 
 const ProblemPreviewPage = () => {
-  const { contest, problem, numProblems } = useParams<ProblemPreviewPageProp>();
+  const { contest, problem } = useParams<ProblemPreviewPageProp>();
 
-  if (!(contest && problem && numProblems)) {
+  if (!(contest && problem)) {
     return <></>;
   }
 
-  return (
-    <ProblemPreview
-      contest={contest}
-      numProblems={Number(numProblems)}
-      problem={problem}
-    />
-  );
+  return <ProblemPreview contest={contest} problem={problem} />;
 };
 
 const ProblemAnsPage = () => {
-  const { contest, problem, numProblems } = useParams<ProblemPreviewPageProp>();
+  const { contest, problem } = useParams<ProblemPreviewPageProp>();
 
-  if (!(contest && problem && numProblems)) {
+  if (!(contest && problem)) {
     return <></>;
   }
 
-  return (
-    <ProblemAnsPreview
-      contest={contest}
-      numProblems={Number(numProblems)}
-      problem={problem}
-    />
-  );
+  return <ProblemAnsPreview contest={contest} problem={problem} />;
 };
 
 const theme = createMuiTheme({
@@ -76,12 +63,12 @@ const App: React.FC = () => (
               <Route
                 component={ProblemPreviewPage}
                 exact
-                path="/preview/:contest/:problem/:numProblems"
+                path="/preview/:contest/:problem/"
               />
               <Route
                 component={ProblemAnsPage}
                 exact
-                path="/answer/:contest/:problem/:numProblems"
+                path="/answer/:contest/:problem/"
               />
             </Switch>
           </main>
