@@ -1,3 +1,4 @@
+// keywords : gcd
 use argio::argio;
 use competition_lib::gcd::lcm;
 
