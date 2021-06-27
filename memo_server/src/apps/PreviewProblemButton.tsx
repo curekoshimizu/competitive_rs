@@ -6,13 +6,11 @@ import Button from '@material-ui/core/Button';
 interface PreviewProblemButtonProp {
   contest: string;
   problem: string;
-  numProblems: number;
 }
 
 const PreviewProblemButton: React.FC<PreviewProblemButtonProp> = ({
   contest,
   problem,
-  numProblems,
 }) => {
   return (
     <Box display="flex">
@@ -20,7 +18,7 @@ const PreviewProblemButton: React.FC<PreviewProblemButtonProp> = ({
         <Button
           color="primary"
           component={Link}
-          to={`/preview/${contest}/${problem}/${numProblems}`}
+          to={`/preview/${contest}/${problem}`}
           variant="contained"
         >
           {problem} 問題
@@ -30,7 +28,7 @@ const PreviewProblemButton: React.FC<PreviewProblemButtonProp> = ({
         <Button
           color="secondary"
           component={Link}
-          to={`/answer/${contest}/${problem}/${numProblems}`}
+          to={`/answer/${contest}/${problem}`}
           variant="contained"
         >
           {problem} 解答例

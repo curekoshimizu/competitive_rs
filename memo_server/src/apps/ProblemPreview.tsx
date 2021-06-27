@@ -5,17 +5,15 @@ import ContestRow from './ContestRow';
 interface ProblemPreviewProp {
   contest: string;
   problem: string;
-  numProblems: number;
 }
 
 export const ProblemPreview: React.FC<ProblemPreviewProp> = ({
   contest,
   problem,
-  numProblems,
 }) => {
   return (
     <>
-      <ContestRow contest={contest} numProblems={numProblems} />
+      <ContestRow contest={contest} />
       <Iframe
         height="1000"
         url={`https://atcoder.jp/contests/${contest}/tasks/${contest}_${problem}`}
@@ -28,7 +26,6 @@ export const ProblemPreview: React.FC<ProblemPreviewProp> = ({
 export const ProblemAnsPreview: React.FC<ProblemPreviewProp> = ({
   contest,
   problem,
-  numProblems,
 }) => {
   const url =
     `https://atcoder.jp/contests/${contest}/submissions?` +
@@ -36,7 +33,7 @@ export const ProblemAnsPreview: React.FC<ProblemPreviewProp> = ({
 
   return (
     <>
-      <ContestRow contest={contest} numProblems={numProblems} />
+      <ContestRow contest={contest} />
       <Iframe height="1000" url={url} width="100%" />
     </>
   );
