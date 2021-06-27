@@ -24,7 +24,7 @@ const ContestRow: React.FC<ContestRowProp> = ({ contest, numProblems }) => {
           const problem = String.fromCharCode(code + idx);
 
           return (
-            <Box key={idx} width={200}>
+            <Box key={idx} width={300}>
               <PreviewProblemButton
                 contest={contest}
                 numProblems={numProblems}
