@@ -1,4 +1,4 @@
-// keywords :
+// keywords : chars
 
 use argio::argio;
 use proconio::marker::Chars;

@@ -1,8 +1,15 @@
-// keywords : 
+// keywords : iproduct
 
 use argio::argio;
+#[macro_use]
+extern crate itertools;
 
 #[argio]
-fn main(n: u32, _a: [u32; n]) {
-    todo!();
+fn main(a: u32, b: u32) -> usize {
+    iproduct!(0..10, 0..10, 0..10)
+        .filter(|(x, y, z)| {
+            let target = x * 10000 + y * 1000 + z * 100 + y * 10 + x;
+            a <= target && target <= b
+        })
+        .count()
 }
