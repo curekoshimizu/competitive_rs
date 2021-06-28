@@ -1,13 +1,6 @@
-use proconio::{input, fastout};
+use argio::argio;
 
-#[fastout]
-fn main() {
-
-    input! {
-        _n: u32,
-        mut m: u32,
-    }
-
-
-    todo!()
+#[argio]
+fn main(n: u32, _a: [u32; n]) {
+    todo!();
 }
