@@ -15,7 +15,7 @@ export const ProblemPreview: React.FC<ProblemPreviewProp> = ({
     <>
       <ContestRow contest={contest} />
       <Iframe
-        height="1000"
+        height="5000"
         url={`https://atcoder.jp/contests/${contest}/tasks/${contest}_${problem}`}
         width="100%"
       />
@@ -34,7 +34,7 @@ export const ProblemAnsPreview: React.FC<ProblemPreviewProp> = ({
   return (
     <>
       <ContestRow contest={contest} />
-      <Iframe height="1000" url={url} width="100%" />
+      <Iframe height="3000" url={url} width="100%" />
     </>
   );
 };
