@@ -1,8 +1,7 @@
 // keywords : iproduct
 
 use argio::argio;
-#[macro_use]
-extern crate itertools;
+use itertools::iproduct;
 
 #[argio]
 fn main(a: u32, b: u32) -> usize {
