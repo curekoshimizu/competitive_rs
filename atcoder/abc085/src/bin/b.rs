@@ -1,3 +1,4 @@
+// keywords : hash
 use argio::argio;
 use std::collections::HashSet;
 

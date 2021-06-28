@@ -1,3 +1,4 @@
+// keywords : flat_map
 use argio::argio;
 
 #[argio]
