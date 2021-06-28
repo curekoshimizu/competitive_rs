@@ -1,11 +1,10 @@
+// keywords : combinations
+
 use argio::argio;
+use itertools::Itertools;
 
 #[argio]
 fn main(n: u64, origin: [String; n]) -> u64 {
-    let checker = [
-        "MAR", "MAC", "MAH", "MRC", "MRH", "MCH", "ARC", "ARH", "RCH", "ACH",
-    ];
-
     let mut table = [0u64; 5];
 
     origin
@@ -19,28 +18,9 @@ fn main(n: u64, origin: [String; n]) -> u64 {
             _ => {}
         });
 
-    let mut result = 0u64;
-
-    for check in checker.iter() {
-        let i0 = index(check.chars().nth(0).unwrap());
-        let i1 = index(check.chars().nth(1).unwrap());
-        let i2 = index(check.chars().nth(2).unwrap());
-
-        let local_result = table[i0] * table[i1] * table[i2];
-
-        result += local_result;
-    }
-
-    result
-}
-
-fn index(c: char) -> usize {
-    match c {
-        'M' => 0,
-        'A' => 1,
-        'R' => 2,
-        'C' => 3,
-        'H' => 4,
-        _ => panic!("!?"),
-    }
+    table
+        .iter()
+        .combinations(3)
+        .map(|vec| vec[0] * vec[1] * vec[2])
+        .sum()
 }
