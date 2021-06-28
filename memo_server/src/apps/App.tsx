@@ -20,19 +20,11 @@ interface ProblemPreviewPageProp {
 const ProblemPreviewPage = () => {
   const { contest, problem } = useParams<ProblemPreviewPageProp>();
 
-  if (!(contest && problem)) {
-    return <></>;
-  }
-
   return <ProblemPreview contest={contest} problem={problem} />;
 };
 
 const ProblemAnsPage = () => {
   const { contest, problem } = useParams<ProblemPreviewPageProp>();
-
-  if (!(contest && problem)) {
-    return <></>;
-  }
 
   return <ProblemAnsPreview contest={contest} problem={problem} />;
 };

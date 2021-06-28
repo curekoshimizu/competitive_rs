@@ -36,10 +36,15 @@ const ContestRow: React.FC<ContestRowProp> = ({ contest }) => {
         </Typography>
       </Box>
       <Box display="flex" width="100%">
-        {contestInfo.map(({ name }) => {
+        {contestInfo.map(({ name, solved, keywords }) => {
           return (
             <Box key={name} width={300}>
-              <PreviewProblemButton contest={contest} problem={name} />
+              <PreviewProblemButton
+                contest={contest}
+                keywords={keywords}
+                problem={name}
+                solved={solved}
+              />
             </Box>
           );
         })}
