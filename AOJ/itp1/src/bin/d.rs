@@ -1,4 +1,4 @@
-// keywords : 
+// keywords :
 
 use argio::argio;
 

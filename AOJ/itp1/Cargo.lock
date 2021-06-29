@@ -3,5 +3,12 @@
 version = 3
 
 [[package]]
+name = "input_lib"
+version = "0.1.0"
+
+[[package]]
 name = "itp1"
 version = "0.1.0"
+dependencies = [
+ "input_lib",
+]
