@@ -1,8 +1,16 @@
 // keywords :
 
-use argio::argio;
+use input_lib::*;
 
-#[argio]
-fn main(n: u32, _a: [u32; n]) {
-    todo!();
+fn main() {
+    input! {
+        s: u64,
+    }
+
+    let h = s / 3600;
+    let s = s % 3600;
+    let m = s / 60;
+    let s = s % 60;
+
+    println!("{}:{}:{}", h, m, s);
 }

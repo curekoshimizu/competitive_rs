@@ -1,8 +1,12 @@
 // keywords :
 
-use argio::argio;
+use input_lib::*;
 
-#[argio]
-fn main(n: u32, _a: [u32; n]) {
-    todo!();
+fn main() {
+    input! {
+        a: u32,
+        b: u32,
+    }
+
+    println!("{} {}", a * b, 2 * a + 2 * b);
 }
