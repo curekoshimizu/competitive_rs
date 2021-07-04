@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 #[macro_export]
 macro_rules! input{
     (sc=$sc:expr,$($r:tt)*)=>{
@@ -29,7 +31,7 @@ macro_rules! read_value{
     };
     ($sc:expr,Chars)=>{read_value!($sc,String).chars().collect::<Vec<char>>()};
     ($sc:expr,Usize1)=>{read_value!($sc,usize)-1};
-    ($sc:expr,$t:ty)=>{$sc.next::<$t>()};
+    ($sc:expr,$t:ty)=>{$sc.next::<$t>().unwrap()};
 }
 pub struct Scanner {
     s: Box<str>,
@@ -52,15 +54,11 @@ impl Scanner {
         sc
     }
     #[inline]
-    pub fn next<T: std::str::FromStr>(&mut self) -> T
+    pub fn next<T: FromStr>(&mut self) -> Option<T>
     where
         T::Err: std::fmt::Debug,
     {
-        self.input
-            .next()
-            .unwrap()
-            .parse::<T>()
-            .expect("Parse error")
+        Some(self.input.next()?.parse::<T>().expect("Parse error"))
     }
 }
 
@@ -110,5 +108,15 @@ mod tests {
         assert_eq!(s[1], 'b');
         assert_eq!(s[2], 'c');
         assert_eq!(s[3], 'd');
+    }
+    #[test]
+    fn test_scanner_next() {
+        let cursor = io::Cursor::new(b"1 2 a bcd");
+        let mut sc = Scanner::new(cursor);
+        assert_eq!(sc.next::<u32>(), Some(1));
+        assert_eq!(sc.next::<u32>(), Some(2));
+        assert_eq!(sc.next::<char>(), Some('a'));
+        assert_eq!(sc.next::<String>(), Some("bcd".to_string()));
+        assert_eq!(sc.next::<String>(), None);
     }
 }
