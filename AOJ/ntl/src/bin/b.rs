@@ -1,18 +1,15 @@
 // keywords :
 
-use argio::argio;
+use input_lib::*;
+use prime::mod_power;
 
-#[argio]
-fn main(n: u32, _a: [u32; n]) {
-    todo!();
+const MOD: u64 = 1000000007;
+
+fn main() {
+    input! {
+        m: u64,
+        n: u64,
+    }
+
+    println!("{}", mod_power(m, n, MOD));
 }
-
-// use input_lib::*;
-//
-// fn main() {
-//     input! {
-//         n: u32,
-//     }
-//
-//     println!("{}", n);
-// }

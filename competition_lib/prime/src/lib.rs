@@ -99,6 +99,25 @@ impl SieveEratosthenes {
     }
 }
 
+/// m^n % modulo
+/// O(log n)
+pub fn mod_power(m: u64, mut n: u64, modulo: u64) -> u64 {
+    let mut ans: u64 = 1;
+
+    let mut cur: u64 = m;
+
+    while n != 0 {
+        if n & 1 == 1 {
+            ans = (ans * cur) % modulo;
+        }
+
+        cur = (cur * cur) % modulo;
+        n >>= 1;
+    }
+
+    ans
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -162,5 +181,16 @@ mod tests {
         assert!(!ret.is_prime[6]);
         assert!(!ret.is_prime[24]);
         assert_eq!(ret.is_prime.iter().filter(|&i| *i).count(), 25);
+    }
+
+    #[test]
+    fn test_mod_power() {
+        let modulo: u64 = 1000000007;
+        assert_eq!(mod_power(2, 3, modulo), 8);
+        assert_eq!(mod_power(5, 8, modulo), 390625);
+        assert_eq!(mod_power(31, 8, modulo), 891031477);
+        assert_eq!(mod_power(99, 999999991, modulo), 631782380);
+        assert_eq!(mod_power(1, 999999570, modulo), 1);
+        assert_eq!(mod_power(83, 999999570, modulo), 642657703);
     }
 }
