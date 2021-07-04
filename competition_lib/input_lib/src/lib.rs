@@ -63,3 +63,52 @@ impl Scanner {
             .expect("Parse error")
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::io;
+
+    #[test]
+    fn test_u32() {
+        let cursor = io::Cursor::new(b"0 2");
+        let mut sc = Scanner::new(cursor);
+        input! {
+            sc=sc,
+            n: u32,
+            m: u32,
+        }
+        assert_eq!(n, 0);
+        assert_eq!(m, 2);
+    }
+
+    #[test]
+    fn test_array() {
+        let cursor = io::Cursor::new(b"2 1 3");
+        let mut sc = Scanner::new(cursor);
+        input! {
+            sc=sc,
+            n: u32,
+            a: [u32; n],
+        }
+        assert_eq!(n, 2);
+        assert_eq!(a.len(), 2);
+        assert_eq!(a[0], 1);
+        assert_eq!(a[1], 3);
+    }
+
+    #[test]
+    fn test_chars() {
+        let cursor = io::Cursor::new(b"abcd");
+        let mut sc = Scanner::new(cursor);
+        input! {
+            sc=sc,
+            s: Chars, // Vec<char>
+        }
+        assert_eq!(s.len(), 4);
+        assert_eq!(s[0], 'a');
+        assert_eq!(s[1], 'b');
+        assert_eq!(s[2], 'c');
+        assert_eq!(s[3], 'd');
+    }
+}
