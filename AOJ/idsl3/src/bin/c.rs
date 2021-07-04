@@ -1,4 +1,4 @@
-// keywords : 
+// keywords :
 
 use argio::argio;
 
@@ -6,7 +6,6 @@ use argio::argio;
 fn main(n: u32, _a: [u32; n]) {
     todo!();
 }
-
 
 // use input_lib::*;
 //
