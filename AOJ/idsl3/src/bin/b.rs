@@ -1,18 +1,30 @@
 // keywords :
 
-use argio::argio;
+use input_lib::*;
+use std::collections::VecDeque;
 
-#[argio]
-fn main(n: u32, _a: [u32; n]) {
-    todo!();
+fn main() {
+    input! {
+        n: u32,
+        limit: u32,
+        v: [(String, u32); n],
+    }
+
+    let mut current_time = 0;
+    let mut queue = VecDeque::new();
+    for x in v {
+        queue.push_back(x);
+    }
+
+    // solve
+
+    while let Some((name, t)) = queue.pop_front() {
+        if t <= limit {
+            current_time += t;
+            println!("{} {}", name, current_time);
+        } else {
+            current_time += limit;
+            queue.push_back((name, t - limit));
+        }
+    }
 }
-
-// use input_lib::*;
-//
-// fn main() {
-//     input! {
-//         n: u32,
-//     }
-//
-//     println!("{}", n);
-// }
