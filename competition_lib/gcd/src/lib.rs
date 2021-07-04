@@ -14,6 +14,8 @@ fn _gcd_core(a: u64, b: u64) -> u64 {
     return _gcd_core(b, a % b);
 }
 
+/// let (g, x, y) = ext_gcd(a, b);
+/// ax + by = y
 pub fn ext_gcd(a: u64, b: u64) -> (u64, i64, i64) {
     let (d, x, y) = _ext_gcd_core(a.try_into().unwrap(), b.try_into().unwrap());
     return (d.try_into().unwrap(), x, y);
