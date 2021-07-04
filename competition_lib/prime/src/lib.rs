@@ -69,6 +69,36 @@ pub fn prime_factorization(mut n: u64) -> Vec<u64> {
     ret
 }
 
+/// Sieve of Eratosthenes
+/// O( n log log n ) to make is_prime table
+/// Example.
+///   prime_factorization(3)  ==  vec![3]
+///   prime_factorization(24) ==  vec![1, 2, 3, 4, 6, 8, 12, 24]
+pub struct SieveEratosthenes {
+    pub is_prime: Vec<bool>,
+}
+
+impl SieveEratosthenes {
+    pub fn new(n: usize) -> SieveEratosthenes {
+        // solver
+        let mut is_prime = vec![true; n + 1];
+        is_prime[0] = false;
+        is_prime[1] = false;
+
+        for i in 2..=n {
+            if is_prime[i] {
+                let mut j = 2 * i;
+                while j <= n {
+                    is_prime[j] = false;
+                    j += i;
+                }
+            }
+        }
+
+        return SieveEratosthenes { is_prime };
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -120,5 +150,17 @@ mod tests {
         check(508369, vec![23, 23, 31, 31]);
         check(48319935, vec![3, 5, 41, 78569]);
         check(93208043, vec![93208043]);
+    }
+
+    #[test]
+    fn test_sieve_of_eratothenes() {
+        let ret = SieveEratosthenes::new(100);
+        assert!(ret.is_prime[2]);
+        assert!(ret.is_prime[3]);
+        assert!(!ret.is_prime[4]);
+        assert!(ret.is_prime[5]);
+        assert!(!ret.is_prime[6]);
+        assert!(!ret.is_prime[24]);
+        assert_eq!(ret.is_prime.iter().filter(|&i| *i).count(), 25);
     }
 }
