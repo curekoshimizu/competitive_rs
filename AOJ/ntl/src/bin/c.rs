@@ -1,18 +1,15 @@
 // keywords :
 
-use argio::argio;
+use gcd::lcm;
+use input_lib::*;
 
-#[argio]
-fn main(n: u32, _a: [u32; n]) {
-    todo!();
+fn main() {
+    input! {
+        n: u64,
+        v: [u64; n],
+    }
+
+    let ret = lcm(&v);
+
+    println!("{}", ret);
 }
-
-// use input_lib::*;
-//
-// fn main() {
-//     input! {
-//         n: u32,
-//     }
-//
-//     println!("{}", n);
-// }
