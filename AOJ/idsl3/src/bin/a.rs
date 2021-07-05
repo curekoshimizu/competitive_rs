@@ -1,6 +1,6 @@
 // keywords :
 
-use input_lib::Scanner;
+use io_lib::Scanner;
 
 fn main() {
     let mut input = Scanner::new(std::io::stdin().lock());

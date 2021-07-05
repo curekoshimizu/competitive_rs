@@ -7,7 +7,7 @@ pulish = false
 
 # dependencies added to new project
 [dependencies]
-input_lib = { path = "../../competition_lib/input_lib" }
+io_lib = { path = "../../competition_lib/io_lib" }
 
 [profile.release]
 lto = true

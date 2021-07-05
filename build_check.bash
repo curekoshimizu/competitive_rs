@@ -11,4 +11,3 @@ do
   cargo test
   popd > /dev/null
 done
-exit $?

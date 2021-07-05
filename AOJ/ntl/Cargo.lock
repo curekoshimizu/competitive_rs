@@ -38,7 +38,7 @@ name = "gcd"
 version = "0.1.0"
 
 [[package]]
-name = "input_lib"
+name = "io_lib"
 version = "0.1.0"
 
 [[package]]
@@ -59,7 +59,7 @@ version = "0.1.0"
 dependencies = [
  "argio",
  "gcd",
- "input_lib",
+ "io_lib",
  "prime",
  "proconio",
 ]

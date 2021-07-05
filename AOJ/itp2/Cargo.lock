@@ -34,7 +34,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "input_lib"
+name = "io_lib"
 version = "0.1.0"
 
 [[package]]
@@ -42,7 +42,7 @@ name = "itp2"
 version = "0.1.0"
 dependencies = [
  "argio",
- "input_lib",
+ "io_lib",
  "proconio",
 ]
 

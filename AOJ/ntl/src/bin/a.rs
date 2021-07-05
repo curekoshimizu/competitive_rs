@@ -1,6 +1,6 @@
 // keywords :
 
-use input_lib::*;
+use io_lib::*;
 use prime::prime_factorization;
 
 fn main() {

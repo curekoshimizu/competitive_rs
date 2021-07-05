@@ -1,6 +1,6 @@
 // keywords :
 
-use input_lib::*;
+use io_lib::*;
 
 fn main() {
     let mut stack: Vec<i32> = Vec::new();

@@ -1,6 +1,6 @@
 // keywords :
 
-use input_lib::Scanner;
+use io_lib::Scanner;
 
 use std::collections::VecDeque;
 

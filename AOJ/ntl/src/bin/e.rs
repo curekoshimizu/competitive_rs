@@ -1,7 +1,7 @@
 // keywords :
 
 use gcd::ext_gcd;
-use input_lib::*;
+use io_lib::*;
 
 fn norm(x: i64, y: i64) -> i64 {
     x.abs() + y.abs()

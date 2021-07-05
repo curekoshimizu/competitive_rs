@@ -1,7 +1,7 @@
 // keywords :
 
 use gcd::gcd;
-use input_lib::*;
+use io_lib::*;
 
 fn main() {
     input! {
