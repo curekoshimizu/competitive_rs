@@ -7,7 +7,7 @@ edition = "2018"
 [dependencies]
 proconio = { version = "0.4.3", features = ["derive"] }
 argio = "0.2.0"
-competition_lib = { path = "../../competition_lib/" }
+gcd = { path = "../../competition_lib/gcd" }
 
 
 [profile.release]

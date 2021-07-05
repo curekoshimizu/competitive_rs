@@ -1,6 +1,6 @@
 // keywords : gcd
 use argio::argio;
-use competition_lib::gcd::gcd;
+use gcd::gcd;
 
 fn main() {
     solver_1();
