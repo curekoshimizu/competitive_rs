@@ -139,8 +139,8 @@ pub fn power(m: u64, mut n: u64) -> u64 {
     ans
 }
 
-// phi(n)
-// O( n log(n) )
+/// phi(n) = #{ 1 ≤ k ≤ n | gcd(n, k) = 1}
+/// O( n log(n) )
 pub fn euler_phi(n: u64) -> u64 {
     let primes = prime_factorization(n);
     let set = primes.iter().collect::<HashSet<_>>();
