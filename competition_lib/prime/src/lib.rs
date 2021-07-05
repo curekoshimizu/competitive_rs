@@ -74,8 +74,9 @@ pub fn prime_factorization(mut n: u64) -> Vec<u64> {
 /// Sieve of Eratosthenes
 /// O( n log log n ) to make is_prime table
 /// Example.
-///   prime_factorization(3)  ==  vec![3]
-///   prime_factorization(24) ==  vec![1, 2, 3, 4, 6, 8, 12, 24]
+///   let checker = SieveEratosthenes::new(6)
+///   checker.is_prime[4] == false
+///   checker.is_prime[5] == true
 pub struct SieveEratosthenes {
     pub is_prime: Vec<bool>,
 }
@@ -140,7 +141,7 @@ pub fn power(m: u64, mut n: u64) -> u64 {
 }
 
 /// phi(n) = #{ 1 ≤ k ≤ n | gcd(n, k) = 1}
-/// O( n log(n) )
+/// O( sqrt(n) )
 pub fn euler_phi(n: u64) -> u64 {
     let primes = prime_factorization(n);
     let set = primes.iter().collect::<HashSet<_>>();
@@ -151,6 +152,40 @@ pub fn euler_phi(n: u64) -> u64 {
     }
 
     ans
+}
+
+/// Table of euler phi
+/// O( n log log n ) to make is_prime table
+/// Example.
+///   let checker = SieveEratosthenes::new(6)
+///   checker.is_prime[4] == false
+///   checker.is_prime[5] == true
+pub struct EulerPhiTable {
+    pub phi: Vec<u64>,
+}
+
+impl EulerPhiTable {
+    pub fn new(n: usize) -> EulerPhiTable {
+        // solver
+        let mut phi: Vec<u64> = vec![0; n + 1];
+        for i in 0..=n {
+            phi[i] = i as u64;
+        }
+
+        for i in 2..=n {
+            // if prime
+            if phi[i] == i as u64 {
+                let mut j = i;
+                while j <= n {
+                    let i = i as u64;
+                    phi[j] = phi[j] / i * (i - 1);
+                    j += i as usize;
+                }
+            }
+        }
+
+        return EulerPhiTable { phi };
+    }
 }
 
 #[cfg(test)]
@@ -242,5 +277,13 @@ mod tests {
         assert_eq!(euler_phi(39), 24);
         assert_eq!(euler_phi(999999995), 789955584);
         assert_eq!(euler_phi(999999991), 985074552);
+    }
+
+    #[test]
+    fn test_table_phi() {
+        let table = EulerPhiTable::new(100);
+        for i in 1..100 {
+            assert_eq!(table.phi[i], euler_phi(i as u64));
+        }
     }
 }
