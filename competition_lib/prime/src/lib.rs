@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 /// whether n is prime number
 /// O( sqrt(n) )
 pub fn is_prime(n: u64) -> bool {
@@ -118,6 +120,39 @@ pub fn mod_power(m: u64, mut n: u64, modulo: u64) -> u64 {
     ans
 }
 
+/// m^n
+/// O(log n)
+pub fn power(m: u64, mut n: u64) -> u64 {
+    let mut ans: u64 = 1;
+
+    let mut cur: u64 = m;
+
+    while n != 0 {
+        if n & 1 == 1 {
+            ans *= cur;
+        }
+
+        cur *= cur;
+        n >>= 1;
+    }
+
+    ans
+}
+
+// phi(n)
+// O( n log(n) )
+pub fn euler_phi(n: u64) -> u64 {
+    let primes = prime_factorization(n);
+    let set = primes.iter().collect::<HashSet<_>>();
+
+    let mut ans = n;
+    for &p in set.iter() {
+        ans = ans / p * (p - 1);
+    }
+
+    ans
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -192,5 +227,20 @@ mod tests {
         assert_eq!(mod_power(99, 999999991, modulo), 631782380);
         assert_eq!(mod_power(1, 999999570, modulo), 1);
         assert_eq!(mod_power(83, 999999570, modulo), 642657703);
+    }
+
+    #[test]
+    fn test_power() {
+        assert_eq!(power(2, 3), 8);
+        assert_eq!(power(5, 8), 390625);
+        assert_eq!(power(31, 7), 27512614111);
+    }
+
+    #[test]
+    fn test_euler_phi() {
+        assert_eq!(euler_phi(6), 2);
+        assert_eq!(euler_phi(39), 24);
+        assert_eq!(euler_phi(999999995), 789955584);
+        assert_eq!(euler_phi(999999991), 985074552);
     }
 }

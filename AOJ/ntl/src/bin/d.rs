@@ -1,18 +1,12 @@
 // keywords :
 
-use argio::argio;
+use input_lib::*;
+use prime::euler_phi;
 
-#[argio]
-fn main(n: u32, _a: [u32; n]) {
-    todo!();
+fn main() {
+    input! {
+        n: u64,
+    }
+
+    println!("{}", euler_phi(n));
 }
-
-// use input_lib::*;
-//
-// fn main() {
-//     input! {
-//         n: u32,
-//     }
-//
-//     println!("{}", n);
-// }
