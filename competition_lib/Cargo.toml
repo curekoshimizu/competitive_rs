@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "input_lib",
+    "gcd",
+    "prime",
+]

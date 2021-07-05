@@ -1,6 +1,0 @@
-[workspace]
-members = [
-    "competition_lib/input_lib",
-    "competition_lib/gcd",
-    "competition_lib/prime",
-]
