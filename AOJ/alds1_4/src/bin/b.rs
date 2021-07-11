@@ -1,18 +1,16 @@
 // keywords :
 
-use argio::argio;
+use io_lib::*;
 
-#[argio]
-fn main(n: u32, _a: [u32; n]) {
-    todo!();
+fn main() {
+    input! {
+        n: u32,
+        s: [u64; n],
+        q: u32,
+        t: [u64; q],
+    }
+
+    let result = t.iter().filter_map(|&x| s.binary_search(&x).ok()).count();
+
+    println!("{}", result);
 }
-
-// use io_lib::*;
-//
-// fn main() {
-//     input! {
-//         n: u32,
-//     }
-//
-//     println!("{}", n);
-// }
