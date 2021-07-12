@@ -11,6 +11,10 @@ name = "geometory2d"
 version = "0.1.0"
 
 [[package]]
+name = "geometory3d"
+version = "0.1.0"
+
+[[package]]
 name = "io_lib"
 version = "0.1.0"
 

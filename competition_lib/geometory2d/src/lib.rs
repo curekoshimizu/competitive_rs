@@ -15,9 +15,7 @@ impl Vec2d {
         Vec2d { x: 0.0, y: 0.0 }
     }
     pub fn is_almost_zero(&self) -> bool {
-        dbg!(self.l2_norm());
-
-        self.l2_norm() < 1.0e-8
+        self.l2_norm() < 1.0e-5
     }
     pub fn rotate_by_deg(&self, deg: f64) -> Vec2d {
         self.rotate_by_rad(std::f64::consts::PI * deg / 180.0)
