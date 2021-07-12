@@ -14,6 +14,21 @@ impl Vec2d {
     pub fn origin() -> Self {
         Vec2d { x: 0.0, y: 0.0 }
     }
+    pub fn is_almost_zero(&self) -> bool {
+        dbg!(self.l2_norm());
+
+        self.l2_norm() < 1.0e-8
+    }
+    pub fn rotate_by_deg(&self, deg: f64) -> Vec2d {
+        self.rotate_by_rad(std::f64::consts::PI * deg / 180.0)
+    }
+    pub fn rotate_by_rad(&self, rad: f64) -> Vec2d {
+        let x = self.x;
+        let y = self.y;
+        let cos = f64::cos(rad);
+        let sin = f64::sin(rad);
+        Vec2d::new(x * cos - y * sin, x * sin + y * cos)
+    }
     pub fn dot(&self, rhs: &Vec2d) -> f64 {
         let v = self * rhs;
         v.x + v.y
@@ -288,5 +303,20 @@ mod tests {
     fn unit() {
         let a = Vec2d::new(3.0, 4.0);
         assert_eq!(a.unit_vector(), Vec2d::new(3.0 / 5.0, 4.0 / 5.0));
+    }
+    #[test]
+    fn rotate() {
+        assert!((Vec2d::new(1.0, 0.0).rotate_by_deg(90.0) - Vec2d::new(0.0, 1.0)).is_almost_zero());
+        assert!(
+            (Vec2d::new(1.0, 0.0).rotate_by_deg(180.0) - Vec2d::new(-1.0, 0.0)).is_almost_zero()
+        );
+        assert!(
+            (Vec2d::new(1.0, 0.0).rotate_by_deg(270.0) - Vec2d::new(0.0, -1.0)).is_almost_zero()
+        );
+        assert!(
+            (Vec2d::new(1.0, 1.0).rotate_by_rad(-std::f64::consts::FRAC_PI_4)
+                - Vec2d::new(std::f64::consts::SQRT_2, 0.0))
+            .is_almost_zero()
+        );
     }
 }
