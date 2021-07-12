@@ -3,4 +3,5 @@ members = [
     "io_lib",
     "gcd",
     "prime",
+    "geometory2d",
 ]
