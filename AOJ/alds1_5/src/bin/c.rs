@@ -27,14 +27,17 @@ fn main() {
 fn gen(lines: Lines2d) -> Lines2d {
     let mut points: Vec<Point2d> = vec![];
 
-    for (&start, &end) in lines.iter() {
+    for line in lines.iter() {
+        let start = line.start();
+        let end = line.end();
+
         let p1 = (2.0 * start + end) / 3.0;
         let p2 = (start + 2.0 * end) / 3.0;
 
         let v = (p2 - p1).rotate_by_deg(60.0);
         let p = p1 + v;
 
-        points.push(start);
+        points.push(*start);
         points.push(p1);
         points.push(p);
         points.push(p2);
