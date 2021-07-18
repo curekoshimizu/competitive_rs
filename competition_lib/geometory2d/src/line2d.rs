@@ -76,6 +76,37 @@ mod tests {
         assert_eq!(lines.num_lines(), 0);
     }
     #[test]
+    fn point_project() {
+        let a = Point2d::new(0.0, 0.0);
+        let b = Point2d::new(3.0, 4.0);
+        let line = Line2d::new(&a, &b);
+        assert_eq!(
+            line.project(&Point2d::new(2.0, 5.0)),
+            Point2d::new(3.12, 4.16)
+        );
+        let line = Line2d::new(&b, &a);
+        assert_eq!(
+            line.project(&Point2d::new(2.0, 5.0)),
+            Point2d::new(3.12, 4.16)
+        );
+
+        let v = Vec2d::new(1.0, 3.0);
+        let a = a + v;
+        let b = b + v;
+
+        let line = Line2d::new(&a, &b);
+        assert_eq!(
+            line.project(&(Point2d::new(2.0, 5.0) + v)),
+            Point2d::new(3.12, 4.16) + v
+        );
+        let line = Line2d::new(&b, &a);
+        assert_eq!(
+            line.project(&(Point2d::new(2.0, 5.0) + v)),
+            Point2d::new(3.12, 4.16) + v
+        );
+    }
+
+    #[test]
     fn lines_iter() {
         for line in Lines2d::new(vec![
             Point2d::new(0.0, 0.0),
