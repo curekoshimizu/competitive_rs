@@ -31,6 +31,11 @@ impl Vec2d {
         let v = self * rhs;
         v.x + v.y
     }
+    /// v1 = (x1, y1), v2 = (x2, y2)
+    /// vec1.det(vec2) = x1 y2 - x2 y1 = |v1||v2| sin(theta)
+    pub fn det(&self, rhs: &Vec2d) -> f64 {
+        self.x * rhs.y - self.y * rhs.x
+    }
     pub fn l2_norm(&self) -> f64 {
         self.dot(self).sqrt()
     }
@@ -290,6 +295,11 @@ mod tests {
     #[test]
     fn dot() {
         assert_eq!(Vec2d::new(1.0, 2.0).dot(&Vec2d::new(2.0, -3.0)), -4.0);
+    }
+    #[test]
+    fn det() {
+        assert_eq!(Vec2d::new(2.0, -3.0).det(&Vec2d::new(1.0, 2.0)), 7.0);
+        assert_eq!(Vec2d::new(1.0, 2.0).det(&Vec2d::new(2.0, -3.0)), -7.0);
     }
     #[test]
     fn norm() {
