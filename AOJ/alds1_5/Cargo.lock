@@ -16,6 +16,7 @@ name = "alds1_5"
 version = "0.1.0"
 dependencies = [
  "argio",
+ "geometory2d",
  "io_lib",
  "proconio",
 ]
@@ -41,6 +42,10 @@ dependencies = [
  "regex",
  "syn",
 ]
+
+[[package]]
+name = "geometory2d"
+version = "0.1.0"
 
 [[package]]
 name = "io_lib"

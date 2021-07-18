@@ -6,6 +6,7 @@ edition = "2018"
 # dependencies added to new project
 [dependencies]
 io_lib = { path = "../../competition_lib/io_lib" }
+geometory2d = { path = "../../competition_lib/geometory2d" }
 # gcd = { path = "../../competition_lib/gcd" }
 proconio = { version = "0.4.3", features = ["derive"] }
 # itertools = "0.10.1"
