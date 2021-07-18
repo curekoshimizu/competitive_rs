@@ -9,6 +9,12 @@ impl Point2d {
     pub fn new(x: f64, y: f64) -> Self {
         Point2d(Vec2d::new(x, y))
     }
+    pub fn x(&self) -> f64 {
+        self.0.x
+    }
+    pub fn y(&self) -> f64 {
+        self.0.y
+    }
     pub fn origin() -> Self {
         Point2d(Vec2d::origin())
     }
@@ -123,6 +129,59 @@ implement_binop! {Sub, sub, -}
 implement_binop! {Mul, mul, *}
 implement_binop! {Div, div, /}
 
+// Point(a) + Point(b) -> Point
+impl Add<Point2d> for Point2d {
+    type Output = Point2d;
+    fn add(self, rhs: Point2d) -> Self::Output {
+        self + rhs.0
+    }
+}
+impl<'a> Add<&'a Point2d> for Point2d {
+    type Output = Point2d;
+    fn add(self, rhs: &'a Point2d) -> Self::Output {
+        self + rhs.0
+    }
+}
+impl<'a> Add<Point2d> for &'a Point2d {
+    type Output = Point2d;
+    fn add(self, rhs: Point2d) -> Self::Output {
+        self + rhs.0
+    }
+}
+impl<'a, 'b> Add<&'b Point2d> for &'a Point2d {
+    type Output = Point2d;
+    fn add(self, rhs: &'b Point2d) -> Self::Output {
+        self + rhs.0
+    }
+}
+
+// Point(end) - Point(start) -> Vec
+impl Sub<Point2d> for Point2d {
+    type Output = Vec2d;
+    fn sub(self, rhs: Point2d) -> Self::Output {
+        (self - rhs.0).0
+    }
+}
+impl<'a> Sub<&'a Point2d> for Point2d {
+    type Output = Vec2d;
+    fn sub(self, rhs: &'a Point2d) -> Self::Output {
+        (self - rhs.0).0
+    }
+}
+impl<'a> Sub<Point2d> for &'a Point2d {
+    type Output = Vec2d;
+    fn sub(self, rhs: Point2d) -> Self::Output {
+        (self - rhs.0).0
+    }
+}
+
+impl<'a, 'b> Sub<&'b Point2d> for &'a Point2d {
+    type Output = Vec2d;
+    fn sub(self, rhs: &'b Point2d) -> Self::Output {
+        (self - rhs.0).0
+    }
+}
+
 implement_assignop! {AddAssign, add_assign, +}
 implement_assignop! {SubAssign, sub_assign, -}
 implement_assignop! {MulAssign, mul_assign, *}
@@ -194,6 +253,7 @@ mod tests {
     fn mul() {
         let a = Point2d::new(1.0, 1.0);
         let b = Vec2d::new(1.0, 2.0);
+        assert_eq!(&a * 3.0, Point2d::new(3.0, 3.0));
         assert_eq!(&a * &b, Point2d::new(1.0, 2.0));
         assert_eq!(a * b, Point2d::new(1.0, 2.0));
     }
@@ -201,8 +261,23 @@ mod tests {
     fn div() {
         let a = Point2d::new(1.0, 1.0);
         let b = Vec2d::new(1.0, 2.0);
+        assert_eq!(&a / 2.0, Point2d::new(0.5, 0.5));
         assert_eq!(&a / &b, Point2d::new(1.0, 0.5));
         assert_eq!(a / b, Point2d::new(1.0, 0.5));
+    }
+    #[test]
+    fn add_point() {
+        let a = Point2d::new(1.0, 1.0);
+        let b = Point2d::new(1.0, 2.0);
+        assert_eq!(&a + &b, Point2d::new(2.0, 3.0));
+        assert_eq!(a + b, Point2d::new(2.0, 3.0));
+    }
+    #[test]
+    fn sub_point() {
+        let a = Point2d::new(1.0, 1.0);
+        let b = Point2d::new(2.0, 3.0);
+        assert_eq!(&a - &b, Vec2d::new(-1.0, -2.0));
+        assert_eq!(b - a, Vec2d::new(1.0, 2.0));
     }
     #[test]
     fn add_assign() {
@@ -268,5 +343,14 @@ mod tests {
                 - Vec2d::new(std::f64::consts::SQRT_2, 0.0))
             .is_almost_zero()
         );
+    }
+
+    #[test]
+    fn gen_vec() {
+        let a = Vec2d::new(1.0, 2.0);
+        let b = Vec2d::new(5.0, 10.0);
+
+        assert!(((&b - &a) - Vec2d::new(4.0, 8.0)).is_almost_zero());
+        assert!(((a - b) - Vec2d::new(-4.0, -8.0)).is_almost_zero());
     }
 }

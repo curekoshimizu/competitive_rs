@@ -6,7 +6,7 @@ pub struct Lines2d {
 
 impl Lines2d {
     pub fn new(points: Vec<Point2d>) -> Self {
-        Lines2d { points, index: 0 }
+        Lines2d { points }
     }
     pub fn num_lines(&self) -> usize {
         let len = self.points.len();
@@ -53,8 +53,10 @@ mod tests {
         ])
         .iter()
         {
-            // let vec = end - start;
-            println!("{:?} {:?}", start, end);
+            let vec = end - start;
+            let [x, y] = vec.to_xy();
+            assert_eq!(x, 1.0);
+            assert_eq!(y, 1.1);
         }
     }
 }
