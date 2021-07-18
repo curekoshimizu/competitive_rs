@@ -1,6 +1,7 @@
 use super::point2d::Point2d;
 use super::vec2d::Vec2d;
 
+#[derive(PartialEq, Debug, Clone, Copy)]
 pub struct Line2d<'a> {
     start: &'a Point2d,
     end: &'a Point2d,
@@ -18,6 +19,13 @@ impl<'a> Line2d<'a> {
     }
     pub fn vector(&self) -> Vec2d {
         self.end - self.start
+    }
+    pub fn project(&self, p: &Point2d) -> Point2d {
+        let a = p - self.start;
+        let v = self.vector().unit_vector();
+        // |a| cos = (v, a) / |v|
+        let a_cos = v.dot(&a);
+        self.start + v * a_cos
     }
 }
 
@@ -37,7 +45,6 @@ impl Lines2d {
             i => i - 1,
         }
     }
-
     // TODO: understand fully why we need "impl"
     pub fn iter(&self) -> impl Iterator<Item = Line2d> {
         self.points
