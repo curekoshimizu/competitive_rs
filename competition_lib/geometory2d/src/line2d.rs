@@ -27,6 +27,11 @@ impl<'a> Line2d<'a> {
         let a_cos = v.dot(&a);
         self.start + v * a_cos
     }
+    pub fn reflect(&self, p: &Point2d) -> Point2d {
+        let mid = self.project(p);
+        let v = (mid - p) * 2.0;
+        p + v
+    }
 }
 
 pub struct Lines2d {
@@ -76,7 +81,7 @@ mod tests {
         assert_eq!(lines.num_lines(), 0);
     }
     #[test]
-    fn point_project() {
+    fn point_projection() {
         let a = Point2d::new(0.0, 0.0);
         let b = Point2d::new(3.0, 4.0);
         let line = Line2d::new(&a, &b);
@@ -103,6 +108,35 @@ mod tests {
         assert_eq!(
             line.project(&(Point2d::new(2.0, 5.0) + v)),
             Point2d::new(3.12, 4.16) + v
+        );
+    }
+    #[test]
+    fn point_reflection() {
+        let a = Point2d::new(0.0, 0.0);
+        let b = Point2d::new(3.0, 4.0);
+        let line = Line2d::new(&a, &b);
+        assert!(
+            (line.reflect(&Point2d::new(2.0, 5.0)) - Point2d::new(4.24, 3.32)).is_almost_zero()
+        );
+        let line = Line2d::new(&b, &a);
+        assert!(
+            (line.reflect(&Point2d::new(2.0, 5.0)) - Point2d::new(4.24, 3.32)).is_almost_zero()
+        );
+
+        let v = Vec2d::new(1.0, 3.0);
+        let a = a + v;
+        let b = b + v;
+
+        let line = Line2d::new(&a, &b);
+        assert!(
+            (line.reflect(&(Point2d::new(2.0, 5.0) + v)) - Point2d::new(4.24, 3.32) - v)
+                .is_almost_zero()
+        );
+
+        let line = Line2d::new(&b, &a);
+        assert!(
+            (line.reflect(&(Point2d::new(2.0, 5.0) + v)) - Point2d::new(4.24, 3.32) - v)
+                .is_almost_zero()
         );
     }
 
