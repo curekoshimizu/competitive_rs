@@ -28,6 +28,10 @@ impl<'a> Line2d<'a> {
     pub fn is_point_on_line(&self, p: &Point2d) -> bool {
         self.0.is_on_line(p)
     }
+    pub fn distance_by_point(&self, p: &Point2d) -> f64 {
+        let prj = self.project(p);
+        (p - prj).l2_norm()
+    }
     pub fn is_line_on_line(&self, line: &Line2d) -> bool {
         if let Some(_) = self.0.intersection_point(&line.0) {
             true
@@ -37,6 +41,13 @@ impl<'a> Line2d<'a> {
     }
     pub fn intersection_point_with_line(&self, line: &Line2d) -> Option<Point2d> {
         self.0.intersection_point(&line.0)
+    }
+    pub fn distance_by_line(&self, line: &Line2d) -> f64 {
+        if self.is_line_on_line(line) {
+            0.0
+        } else {
+            self.distance_by_point(line.start())
+        }
     }
     pub fn is_segment_on_line(&self, segment: &Segment2d) -> bool {
         if let Some(p) = self.0.intersection_point(&segment.0) {
@@ -54,6 +65,16 @@ impl<'a> Line2d<'a> {
             }
         } else {
             None
+        }
+    }
+    pub fn distance_by_segment(&self, segment: &Segment2d) -> f64 {
+        if self.is_segment_on_line(segment) {
+            0.0
+        } else {
+            f64::min(
+                self.distance_by_point(segment.start()),
+                self.distance_by_point(segment.end()),
+            )
         }
     }
     pub fn to_segment(&self) -> Segment2d {
@@ -86,11 +107,22 @@ impl<'a> Segment2d<'a> {
     pub fn is_point_on_segment(&self, p: &Point2d) -> bool {
         self.0.is_on_segment(p)
     }
+    pub fn distance_by_point(&self, p: &Point2d) -> f64 {
+        let prj = self.project(p);
+        if self.is_point_on_segment(&prj) {
+            (p - prj).l2_norm()
+        } else {
+            f64::min((p - self.start()).l2_norm(), (p - self.end()).l2_norm())
+        }
+    }
     pub fn is_line_on_segment(&self, line: &Line2d) -> bool {
         line.is_segment_on_line(self)
     }
     pub fn intersection_point_with_line(&self, line: &Line2d) -> Option<Point2d> {
         line.intersection_point_with_segment(self)
+    }
+    pub fn distance_by_line(&self, line: &Line2d) -> f64 {
+        line.distance_by_segment(self)
     }
     pub fn is_segment_on_segment(&self, segment: &Segment2d) -> bool {
         if let Some(p) = self.0.intersection_point(&segment.0) {
@@ -108,6 +140,22 @@ impl<'a> Segment2d<'a> {
             }
         } else {
             None
+        }
+    }
+    pub fn distance_by_segment(&self, segment: &Segment2d) -> f64 {
+        if self.is_segment_on_segment(segment) {
+            0.0
+        } else {
+            f64::min(
+                f64::min(
+                    self.distance_by_point(segment.start()),
+                    self.distance_by_point(segment.end()),
+                ),
+                f64::min(
+                    segment.distance_by_point(self.start()),
+                    segment.distance_by_point(self.end()),
+                ),
+            )
         }
     }
     pub fn to_line(&self) -> Line2d {
@@ -439,6 +487,44 @@ mod tests {
         let line = Segment2d::new(&a, &b);
         let line2 = Segment2d::new(&c, &d);
         assert!(!line.is_segment_on_segment(&line2));
+    }
+    #[test]
+    fn distance() {
+        let a = Point2d::new(0.0, 0.0);
+        let b = Point2d::new(1.0, 0.0);
+        let c = Point2d::new(0.0, 0.1);
+        let line = Segment2d::new(&a, &b);
+        assert_eq!(line.distance_by_point(&c), 0.1);
+        let d = Point2d::new(-3.0, -4.0);
+        assert_eq!(line.distance_by_point(&d), 5.0);
+
+        let line = Line2d::new(&a, &b);
+        assert_eq!(line.distance_by_point(&c), 0.1);
+
+        let c = Point2d::new(0.0, 0.1);
+        let d = Point2d::new(1.0, 0.1);
+        let line2 = Line2d::new(&c, &d);
+        assert_eq!(line.distance_by_line(&line2), 0.1);
+
+        let c = Point2d::new(0.0, 0.1);
+        let d = Point2d::new(1.0, -0.1);
+        let line2 = Line2d::new(&c, &d);
+        assert_eq!(line.distance_by_line(&line2), 0.0);
+        let line2 = Segment2d::new(&c, &d);
+        assert_eq!(line.distance_by_segment(&line2), 0.0);
+
+        let c = Point2d::new(-3.0, -5.2);
+        let d = Point2d::new(-3.0, -4.0);
+        let line2 = Segment2d::new(&c, &d);
+        assert_eq!(line.distance_by_segment(&line2), 4.0);
+        assert_eq!(line2.distance_by_line(&line), 4.0);
+
+        let a = Point2d::new(0.0, 0.0);
+        let b = Point2d::new(1.0, 0.0);
+        let line = Line2d::new(&a, &b);
+        assert_eq!(line.distance_by_segment(&line2), 4.0);
+        let line = Segment2d::new(&a, &b);
+        assert_eq!(line.distance_by_segment(&line2), 5.0);
     }
     #[test]
     fn lines_iter() {
