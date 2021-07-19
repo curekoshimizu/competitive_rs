@@ -1,6 +1,6 @@
 // keywords :
 
-use geometory2d::line2d::Line2d;
+use geometory2d::line2d::Segment2d;
 use geometory2d::point2d::Point2d;
 
 use io_lib::*;
@@ -18,10 +18,10 @@ fn main() {
         let p2 = Point2d::new(p[4 + base], p[5 + base]);
         let p3 = Point2d::new(p[6 + base], p[7 + base]);
 
-        let line1 = Line2d::new(&p0, &p1);
-        let line2 = Line2d::new(&p2, &p3);
+        let line1 = Segment2d::new(&p0, &p1);
+        let line2 = Segment2d::new(&p2, &p3);
 
-        if line1.is_intersection_point_on_both_segment(&line2) {
+        if line1.is_segment_on_segment(&line2) {
             println!("1");
         } else {
             println!("0");

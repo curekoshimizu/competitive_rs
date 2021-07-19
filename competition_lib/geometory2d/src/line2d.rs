@@ -35,11 +35,25 @@ impl<'a> Line2d<'a> {
             false
         }
     }
+    pub fn intersection_point_with_line(&self, line: &Line2d) -> Option<Point2d> {
+        self.0.intersection_point(&line.0)
+    }
     pub fn is_segment_on_line(&self, segment: &Segment2d) -> bool {
         if let Some(p) = self.0.intersection_point(&segment.0) {
             self.is_point_on_line(&p) && segment.is_point_on_segment(&p)
         } else {
             false
+        }
+    }
+    pub fn intersection_point_with_segment(&self, segment: &Segment2d) -> Option<Point2d> {
+        if let Some(p) = self.0.intersection_point(&segment.0) {
+            if self.is_point_on_line(&p) && segment.is_point_on_segment(&p) {
+                Some(p)
+            } else {
+                None
+            }
+        } else {
+            None
         }
     }
     pub fn to_segment(&self) -> Segment2d {
@@ -75,11 +89,25 @@ impl<'a> Segment2d<'a> {
     pub fn is_line_on_segment(&self, line: &Line2d) -> bool {
         line.is_segment_on_line(self)
     }
+    pub fn intersection_point_with_line(&self, line: &Line2d) -> Option<Point2d> {
+        line.intersection_point_with_segment(self)
+    }
     pub fn is_segment_on_segment(&self, segment: &Segment2d) -> bool {
         if let Some(p) = self.0.intersection_point(&segment.0) {
             self.is_point_on_segment(&p) && segment.is_point_on_segment(&p)
         } else {
             false
+        }
+    }
+    pub fn intersection_point_with_segment(&self, segment: &Segment2d) -> Option<Point2d> {
+        if let Some(p) = self.0.intersection_point(&segment.0) {
+            if self.is_point_on_segment(&p) && segment.is_point_on_segment(&p) {
+                Some(p)
+            } else {
+                None
+            }
+        } else {
+            None
         }
     }
     pub fn to_line(&self) -> Line2d {

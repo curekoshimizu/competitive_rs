@@ -1,6 +1,6 @@
 // keywords :
 
-use geometory2d::line2d::Lines2d;
+use geometory2d::line2d::SegmentPath2d;
 use geometory2d::point2d::Point2d;
 use io_lib::*;
 
@@ -12,7 +12,7 @@ fn main() {
     let x = Point2d::origin();
     let y = Point2d::new(100.0, 0.0);
 
-    let mut lines = Lines2d::new(vec![x, y]);
+    let mut lines = SegmentPath2d::new(vec![x, y]);
 
     for _ in 0..n {
         lines = gen(lines);
@@ -24,7 +24,7 @@ fn main() {
     }
 }
 
-fn gen(lines: Lines2d) -> Lines2d {
+fn gen(lines: SegmentPath2d) -> SegmentPath2d {
     let mut points: Vec<Point2d> = vec![];
 
     for line in lines.iter() {
@@ -44,5 +44,5 @@ fn gen(lines: Lines2d) -> Lines2d {
     }
     points.push(Point2d::new(100.0, 0.0));
 
-    Lines2d::new(points.into())
+    SegmentPath2d::new(points.into())
 }
