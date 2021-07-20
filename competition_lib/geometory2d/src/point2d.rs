@@ -51,6 +51,9 @@ impl Point2d {
     pub fn to_xy(&self) -> [f64; 2] {
         [self.0.x, self.0.y]
     }
+    pub fn to_vector(&self) -> Vec2d {
+        self.0
+    }
 }
 
 macro_rules! implement_binop {
