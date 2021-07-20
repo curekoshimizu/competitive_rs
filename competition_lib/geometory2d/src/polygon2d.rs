@@ -13,14 +13,14 @@ impl Polygon2d {
     pub fn n_gon(&self) -> usize {
         self.vertices.len()
     }
-    pub fn area(&self) -> f64 {
-        let signed_area = self
-            .edges()
+    pub fn signed_area(&self) -> f64 {
+        self.edges()
             .map(|segment| segment.start().to_vector().det(&segment.end().to_vector()))
             .sum::<f64>()
-            / 2.0;
-
-        signed_area.abs()
+            / 2.0
+    }
+    pub fn area(&self) -> f64 {
+        self.signed_area().abs()
     }
     pub fn edges(&self) -> impl Iterator<Item = Segment2d> {
         self.vertices
@@ -46,6 +46,7 @@ mod tests {
             Point2d::new(1.0, 1.0),
         ]);
         assert_eq!(triangle.n_gon(), 3);
+        assert_eq!(triangle.area(), 0.5);
 
         let mut edges = triangle.edges();
         let edge = edges.next().unwrap();
@@ -71,15 +72,18 @@ mod tests {
         let p4 = Point2d::new(0.0, 1.0);
         let square = Polygon2d::new(vec![p1, p2, p3, p4]);
         assert_eq!(square.n_gon(), 4);
+        assert_eq!(square.signed_area(), 1.0);
         assert_eq!(square.area(), 1.0);
 
         let s = Point2d::new(10.0, 20.0);
         let square = Polygon2d::new(vec![p1 + s, p2 + s, p3 + s, p4 + s]);
         assert_eq!(square.n_gon(), 4);
+        assert_eq!(square.signed_area(), 1.0);
         assert_eq!(square.area(), 1.0);
 
         let square = Polygon2d::new(vec![p1, p4, p3, p2]);
         assert_eq!(square.n_gon(), 4);
+        assert_eq!(square.signed_area(), -1.0);
         assert_eq!(square.area(), 1.0);
     }
 
@@ -95,12 +99,14 @@ mod tests {
         assert_eq!(pentagon.area(), 1.5);
 
         let s = Point2d::new(10.0, 20.0);
-        let square = Polygon2d::new(vec![p1 + s, p2 + s, p3 + s, p4 + s, p5 + s]);
-        assert_eq!(square.n_gon(), 5);
-        assert_eq!(square.area(), 1.5);
+        let pentagon = Polygon2d::new(vec![p1 + s, p2 + s, p3 + s, p4 + s, p5 + s]);
+        assert_eq!(pentagon.n_gon(), 5);
+        assert_eq!(pentagon.signed_area(), 1.5);
+        assert_eq!(pentagon.area(), 1.5);
 
         let pentagon = Polygon2d::new(vec![p1, p5, p4, p3, p2]);
         assert_eq!(pentagon.n_gon(), 5);
+        assert_eq!(pentagon.signed_area(), -1.5);
         assert_eq!(pentagon.area(), 1.5);
     }
     #[test]
@@ -115,12 +121,14 @@ mod tests {
         assert_eq!(pentagon.area(), 0.75);
 
         let s = Point2d::new(10.0, 20.0);
-        let square = Polygon2d::new(vec![p1 + s, p2 + s, p3 + s, p4 + s, p5 + s]);
-        assert_eq!(square.n_gon(), 5);
+        let pentagon = Polygon2d::new(vec![p1 + s, p2 + s, p3 + s, p4 + s, p5 + s]);
+        assert_eq!(pentagon.n_gon(), 5);
+        assert_eq!(pentagon.signed_area(), 0.75);
         assert_eq!(pentagon.area(), 0.75);
 
         let pentagon = Polygon2d::new(vec![p1, p5, p4, p3, p2]);
         assert_eq!(pentagon.n_gon(), 5);
+        assert_eq!(pentagon.signed_area(), -0.75);
         assert_eq!(pentagon.area(), 0.75);
     }
 }
