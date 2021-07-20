@@ -21,6 +21,9 @@ impl Point2d {
     pub fn is_almost_zero(&self) -> bool {
         self.0.is_almost_zero()
     }
+    pub fn rotate90(&self) -> Point2d {
+        Point2d(self.0.rotate90())
+    }
     pub fn rotate_by_deg(&self, deg: f64) -> Point2d {
         Point2d(self.0.rotate_by_deg(deg))
     }
@@ -332,6 +335,7 @@ mod tests {
         assert!(
             (Point2d::new(1.0, 0.0).rotate_by_deg(90.0) - Vec2d::new(0.0, 1.0)).is_almost_zero()
         );
+        assert!((Point2d::new(1.0, 0.0).rotate90() - Vec2d::new(0.0, 1.0)).is_almost_zero());
         assert!(
             (Point2d::new(1.0, 0.0).rotate_by_deg(180.0) - Vec2d::new(-1.0, 0.0)).is_almost_zero()
         );

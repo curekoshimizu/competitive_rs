@@ -17,8 +17,11 @@ impl Vec2d {
     pub fn is_almost_zero(&self) -> bool {
         self.l2_norm() < 1.0e-5
     }
+    pub fn rotate90(&self) -> Vec2d {
+        Vec2d::new(-self.y, self.x)
+    }
     pub fn rotate_by_deg(&self, deg: f64) -> Vec2d {
-        self.rotate_by_rad(std::f64::consts::PI * deg / 180.0)
+        self.rotate_by_rad(deg.to_radians())
     }
     pub fn rotate_by_rad(&self, rad: f64) -> Vec2d {
         let x = self.x;
@@ -315,6 +318,7 @@ mod tests {
     #[test]
     fn rotate() {
         assert!((Vec2d::new(1.0, 0.0).rotate_by_deg(90.0) - Vec2d::new(0.0, 1.0)).is_almost_zero());
+        assert!((Vec2d::new(1.0, 0.0).rotate90() - Vec2d::new(0.0, 1.0)).is_almost_zero());
         assert!(
             (Vec2d::new(1.0, 0.0).rotate_by_deg(180.0) - Vec2d::new(-1.0, 0.0)).is_almost_zero()
         );
