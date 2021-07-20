@@ -1,6 +1,14 @@
 use super::line2d::Segment2d;
 use super::point2d::Point2d;
 
+pub enum CONTAINS {
+    IN,
+    OUT,
+    ON,
+}
+
+const EPS: f64 = 1.0e-5;
+
 pub struct Polygon2d {
     pub vertices: Vec<Point2d>,
 }
@@ -36,6 +44,26 @@ impl Polygon2d {
             .abs();
 
         score == self.n_gon() as isize
+    }
+    /// O(n): Winding Number Algorithm
+    pub fn contains(&self, p: &Point2d) -> CONTAINS {
+        let mut angle = 0.0;
+
+        for edge in self.edges() {
+            if edge.is_point_on_segment(p) {
+                return CONTAINS::ON;
+            }
+
+            let v1 = p - edge.start();
+            let v2 = p - edge.end();
+            angle += v1.angle(&v2);
+        }
+
+        if angle.abs() < EPS {
+            CONTAINS::OUT
+        } else {
+            CONTAINS::IN
+        }
     }
     pub fn edges(&self) -> impl Iterator<Item = Segment2d> {
         self.vertices
@@ -146,6 +174,26 @@ mod tests {
         assert_eq!(pentagon.n_gon(), 5);
         assert_eq!(pentagon.area(), 0.75);
         assert!(!pentagon.is_convex());
+        assert!(matches!(
+            pentagon.contains(&Point2d::new(0.1, 0.0)),
+            CONTAINS::ON
+        ));
+        assert!(matches!(
+            pentagon.contains(&Point2d::new(1.0, 0.9)),
+            CONTAINS::ON
+        ));
+        assert!(matches!(
+            pentagon.contains(&Point2d::new(1.0, 1.1)),
+            CONTAINS::OUT
+        ));
+        assert!(matches!(
+            pentagon.contains(&Point2d::new(0.5, 0.4)),
+            CONTAINS::IN
+        ));
+        assert!(matches!(
+            pentagon.contains(&Point2d::new(0.5, 0.6)),
+            CONTAINS::OUT
+        ));
 
         let s = Point2d::new(10.0, 20.0);
         let pentagon = Polygon2d::new(vec![p1 + s, p2 + s, p3 + s, p4 + s, p5 + s]);
@@ -154,10 +202,73 @@ mod tests {
         assert_eq!(pentagon.area(), 0.75);
         assert!(!pentagon.is_convex());
 
+        assert!(matches!(
+            pentagon.contains(&(Point2d::new(0.1, 0.0) + s)),
+            CONTAINS::ON
+        ));
+        assert!(matches!(
+            pentagon.contains(&(Point2d::new(1.0, 0.9) + s)),
+            CONTAINS::ON
+        ));
+        assert!(matches!(
+            pentagon.contains(&(Point2d::new(1.0, 1.1) + s)),
+            CONTAINS::OUT
+        ));
+        assert!(matches!(
+            pentagon.contains(&(Point2d::new(0.5, 0.4) + s)),
+            CONTAINS::IN
+        ));
+        assert!(matches!(
+            pentagon.contains(&(Point2d::new(0.5, 0.6) + s)),
+            CONTAINS::OUT
+        ));
+
         let pentagon = Polygon2d::new(vec![p1, p5, p4, p3, p2]);
         assert_eq!(pentagon.n_gon(), 5);
         assert_eq!(pentagon.signed_area(), -0.75);
         assert_eq!(pentagon.area(), 0.75);
         assert!(!pentagon.is_convex());
+        assert!(matches!(
+            pentagon.contains(&Point2d::new(0.1, 0.0)),
+            CONTAINS::ON
+        ));
+        assert!(matches!(
+            pentagon.contains(&Point2d::new(1.0, 0.9)),
+            CONTAINS::ON
+        ));
+        assert!(matches!(
+            pentagon.contains(&Point2d::new(1.0, 1.1)),
+            CONTAINS::OUT
+        ));
+        assert!(matches!(
+            pentagon.contains(&Point2d::new(0.5, 0.4)),
+            CONTAINS::IN
+        ));
+        assert!(matches!(
+            pentagon.contains(&Point2d::new(0.5, 0.6)),
+            CONTAINS::OUT
+        ));
+    }
+
+    #[test]
+    fn contains() {
+        let pentagon = Polygon2d::new(vec![
+            Point2d::new(0.0, 0.0),
+            Point2d::new(3.0, 1.0),
+            Point2d::new(2.0, 3.0),
+            Point2d::new(0.0, 3.0),
+        ]);
+        assert!(matches!(
+            pentagon.contains(&Point2d::new(2.0, 1.0)),
+            CONTAINS::IN
+        ));
+        assert!(matches!(
+            pentagon.contains(&Point2d::new(0.0, 2.0)),
+            CONTAINS::ON
+        ));
+        assert!(matches!(
+            pentagon.contains(&Point2d::new(3.0, 2.0)),
+            CONTAINS::OUT
+        ));
     }
 }

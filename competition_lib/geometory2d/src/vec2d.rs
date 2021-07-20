@@ -30,6 +30,25 @@ impl Vec2d {
         let sin = f64::sin(rad);
         Vec2d::new(x * cos - y * sin, x * sin + y * cos)
     }
+    pub fn angle(&self, v: &Vec2d) -> f64 {
+        let dot = self.dot(v);
+        let cos_theta = dot / self.l2_norm() / v.l2_norm();
+
+        // to avoid NaN
+        let cos_theta = if cos_theta > 1.0 {
+            1.0
+        } else if cos_theta < -1.0 {
+            -1.0
+        } else {
+            cos_theta
+        };
+
+        if self.det(v) > 0.0 {
+            cos_theta.acos()
+        } else {
+            -cos_theta.acos()
+        }
+    }
     pub fn dot(&self, rhs: &Vec2d) -> f64 {
         let v = self * rhs;
         v.x + v.y
@@ -330,5 +349,17 @@ mod tests {
                 - Vec2d::new(std::f64::consts::SQRT_2, 0.0))
             .is_almost_zero()
         );
+    }
+    #[test]
+    fn angle() {
+        let v1 = Vec2d::new(1.0, 0.1);
+        for deg in vec![
+            0.0, 10.0, -10.0, 30.0, -30.0, 80.0, -80.0, 90.0, -90.0, 110.0, -110.0, 180.0, -180.0,
+            240.0, -240.0,
+        ] {
+            let v2 = v1.rotate_by_deg(deg);
+            let angle = v1.angle(&v2);
+            assert!((v1.rotate_by_rad(angle) - v2).is_almost_zero());
+        }
     }
 }
