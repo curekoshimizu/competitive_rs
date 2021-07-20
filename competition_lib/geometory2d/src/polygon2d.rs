@@ -22,6 +22,21 @@ impl Polygon2d {
     pub fn area(&self) -> f64 {
         self.signed_area().abs()
     }
+    pub fn is_convex(&self) -> bool {
+        let score = self
+            .edge_pair_iter()
+            .map(|(edge1, edge2)| {
+                if edge1.vector().det(&edge2.vector()) >= 0.0 {
+                    1
+                } else {
+                    -1
+                }
+            })
+            .sum::<isize>()
+            .abs();
+
+        score == self.n_gon() as isize
+    }
     pub fn edges(&self) -> impl Iterator<Item = Segment2d> {
         self.vertices
             .iter()
@@ -32,6 +47,10 @@ impl Polygon2d {
                     .chain(self.vertices[0..1].iter()),
             )
             .map(|(start, end)| Segment2d::new(start, end))
+    }
+    pub fn edge_pair_iter(&self) -> impl Iterator<Item = (Segment2d, Segment2d)> {
+        self.edges()
+            .zip(self.edges().skip(1).chain(self.edges().take(1)))
     }
 }
 
@@ -62,6 +81,7 @@ mod tests {
         assert_eq!(edge.end(), &Point2d::new(0.0, 0.0));
 
         assert_eq!(edges.next(), None);
+        assert!(triangle.is_convex());
     }
 
     #[test]
@@ -74,17 +94,20 @@ mod tests {
         assert_eq!(square.n_gon(), 4);
         assert_eq!(square.signed_area(), 1.0);
         assert_eq!(square.area(), 1.0);
+        assert!(square.is_convex());
 
         let s = Point2d::new(10.0, 20.0);
         let square = Polygon2d::new(vec![p1 + s, p2 + s, p3 + s, p4 + s]);
         assert_eq!(square.n_gon(), 4);
         assert_eq!(square.signed_area(), 1.0);
         assert_eq!(square.area(), 1.0);
+        assert!(square.is_convex());
 
         let square = Polygon2d::new(vec![p1, p4, p3, p2]);
         assert_eq!(square.n_gon(), 4);
         assert_eq!(square.signed_area(), -1.0);
         assert_eq!(square.area(), 1.0);
+        assert!(square.is_convex());
     }
 
     #[test]
@@ -97,17 +120,20 @@ mod tests {
         let pentagon = Polygon2d::new(vec![p1, p2, p3, p4, p5]);
         assert_eq!(pentagon.n_gon(), 5);
         assert_eq!(pentagon.area(), 1.5);
+        assert!(pentagon.is_convex());
 
         let s = Point2d::new(10.0, 20.0);
         let pentagon = Polygon2d::new(vec![p1 + s, p2 + s, p3 + s, p4 + s, p5 + s]);
         assert_eq!(pentagon.n_gon(), 5);
         assert_eq!(pentagon.signed_area(), 1.5);
         assert_eq!(pentagon.area(), 1.5);
+        assert!(pentagon.is_convex());
 
         let pentagon = Polygon2d::new(vec![p1, p5, p4, p3, p2]);
         assert_eq!(pentagon.n_gon(), 5);
         assert_eq!(pentagon.signed_area(), -1.5);
         assert_eq!(pentagon.area(), 1.5);
+        assert!(pentagon.is_convex());
     }
     #[test]
     fn non_convex_pentagon() {
@@ -119,16 +145,19 @@ mod tests {
         let pentagon = Polygon2d::new(vec![p1, p2, p3, p4, p5]);
         assert_eq!(pentagon.n_gon(), 5);
         assert_eq!(pentagon.area(), 0.75);
+        assert!(!pentagon.is_convex());
 
         let s = Point2d::new(10.0, 20.0);
         let pentagon = Polygon2d::new(vec![p1 + s, p2 + s, p3 + s, p4 + s, p5 + s]);
         assert_eq!(pentagon.n_gon(), 5);
         assert_eq!(pentagon.signed_area(), 0.75);
         assert_eq!(pentagon.area(), 0.75);
+        assert!(!pentagon.is_convex());
 
         let pentagon = Polygon2d::new(vec![p1, p5, p4, p3, p2]);
         assert_eq!(pentagon.n_gon(), 5);
         assert_eq!(pentagon.signed_area(), -0.75);
         assert_eq!(pentagon.area(), 0.75);
+        assert!(!pentagon.is_convex());
     }
 }
