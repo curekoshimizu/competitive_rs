@@ -1,7 +1,7 @@
 use super::point2d::Point2d;
 use super::vec2d::Vec2d;
 
-const EPS: f64 = 1.0e-5;
+pub const EPS: f64 = 1.0e-5;
 
 #[derive(PartialEq, Debug, Clone, Copy)]
 pub struct Line2d<'a>(Line2dBase<'a>);
