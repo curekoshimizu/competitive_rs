@@ -54,4 +54,37 @@ mod tests {
         //     println!("{}", elem);
         // }
     }
+    #[test]
+    fn heap() {
+        use std::collections::BinaryHeap;
+
+        let mut heap = BinaryHeap::new();
+
+        heap.push(TotalOrd(0.0));
+        heap.push(TotalOrd(10.0));
+        heap.push(TotalOrd(3.0));
+        heap.push(TotalOrd(5.0));
+        heap.push(TotalOrd(1.0));
+
+        assert_eq!(heap.peek(), Some(&TotalOrd(10.0)));
+
+        assert_eq!(heap.pop(), Some(TotalOrd(10.0)));
+        assert_eq!(heap.pop(), Some(TotalOrd(5.0)));
+        assert_eq!(heap.pop(), Some(TotalOrd(3.0)));
+        assert_eq!(heap.pop(), Some(TotalOrd(1.0)));
+        assert_eq!(heap.pop(), Some(TotalOrd(0.0)));
+    }
+    #[test]
+    fn vector_sort() {
+        let mut v = vec![
+            TotalOrd(0.0),
+            TotalOrd(10.0),
+            TotalOrd(3.0),
+            TotalOrd(5.0),
+            TotalOrd(1.0),
+        ];
+        v.sort();
+        assert_eq!(v[0], TotalOrd(0.0));
+        assert_eq!(v[v.len() - 1], TotalOrd(10.0));
+    }
 }
