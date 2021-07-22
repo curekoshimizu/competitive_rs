@@ -9,6 +9,13 @@ pub enum CONTAINS {
     ON,
 }
 
+#[derive(PartialEq, Debug)]
+pub enum IntersectionPoint {
+    EMPTY,
+    ONE(Point2d),
+    TWO(Point2d, Point2d),
+}
+
 #[derive(PartialEq, Debug, Clone, Copy)]
 pub struct Circle2d {
     center: Point2d,
@@ -76,18 +83,27 @@ impl Circle2d {
     pub fn distance_by_point(&self, p: &Point2d) -> f64 {
         ((self.center - p).l2_norm() - self.radius()).abs()
     }
-    pub fn distance_by_line(&self, line: &Line2d) -> f64 {
+    pub fn intersection_point_with_line(&self, line: &Line2d) -> IntersectionPoint {
         let p = line.project(&self.center());
         if self.contains(&p) == CONTAINS::ON {
-            0.0
+            IntersectionPoint::ONE(p)
         } else {
             let d = (p - self.center()).l2_norm();
-            let ret = d - self.radius();
+            let ret = self.radius() - d;
             if ret > 0.0 {
-                ret
+                let len = (self.rad * self.rad - d * d).sqrt();
+                let v = line.vector().unit_vector();
+                IntersectionPoint::TWO(p + &v * len, p - &v * len)
             } else {
-                0.0
+                IntersectionPoint::EMPTY
             }
+        }
+    }
+    pub fn distance_by_line(&self, line: &Line2d) -> f64 {
+        match self.intersection_point_with_line(line) {
+            IntersectionPoint::EMPTY => line.distance_by_point(&self.center()) - self.radius(),
+            IntersectionPoint::ONE(_) => 0.0,
+            IntersectionPoint::TWO(_, _) => 0.0,
         }
     }
 }
@@ -145,6 +161,48 @@ mod tests {
         assert!(matches!(
             circle.contains(&Point2d::new(1.0, 3.1)),
             CONTAINS::OUT
+        ));
+    }
+    #[test]
+    fn intersection_point_with_line() {
+        let circle = Circle2d::new(&Point2d::new(1.0, 2.0), 1.0);
+        let a = Point2d::new(0.0, 0.0);
+        let b = Point2d::new(10.0, 0.0);
+        assert!(matches!(
+            circle.intersection_point_with_line(&Line2d::new(&a, &b)),
+            IntersectionPoint::EMPTY
+        ));
+        let circle = Circle2d::new(&Point2d::new(1.0, 2.0), 1.0);
+        let a = Point2d::new(0.0, 1.0);
+        let b = Point2d::new(10.0, 1.0);
+        assert!(matches!(
+            circle.intersection_point_with_line(&Line2d::new(&a, &b)),
+            IntersectionPoint::ONE(_)
+        ));
+
+        let a = Point2d::new(0.0, 1.1);
+        let b = Point2d::new(10.0, 1.1);
+        if let IntersectionPoint::TWO(p, q) =
+            circle.intersection_point_with_line(&Line2d::new(&a, &b))
+        {
+            assert!(matches!(circle.contains(&p), CONTAINS::ON));
+            assert!(matches!(circle.contains(&q), CONTAINS::ON));
+            assert!((p - q).l2_norm() > 1.0e-3);
+        } else {
+            assert!(false);
+        }
+
+        let a = Point2d::new(0.0, 3.0);
+        let b = Point2d::new(10.0, 3.0);
+        assert!(matches!(
+            circle.intersection_point_with_line(&Line2d::new(&a, &b)),
+            IntersectionPoint::ONE(_)
+        ));
+        let a = Point2d::new(0.0, 4.0);
+        let b = Point2d::new(10.0, 4.0);
+        assert!(matches!(
+            circle.intersection_point_with_line(&Line2d::new(&a, &b)),
+            IntersectionPoint::EMPTY
         ));
     }
     #[test]
