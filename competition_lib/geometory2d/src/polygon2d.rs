@@ -10,6 +10,7 @@ pub enum Contains {
 
 const EPS: f64 = 1.0e-5;
 
+#[derive(PartialEq, Debug, Clone)]
 pub struct Polygon2d {
     pub vertices: Vec<Point2d>,
 }
@@ -47,42 +48,26 @@ impl Polygon2d {
         score == self.n_gon() as isize
     }
     /// O(nlog n)
-    pub fn convex_full(&self) -> Polygon2d {
+    pub fn convex_full(&mut self) {
         let mut vertices = self.vertices.clone();
 
-        vertices.sort_by(|a, b| match a.x().partial_cmp(&b.x()).unwrap() {
-            std::cmp::Ordering::Equal => a.y().partial_cmp(&b.y()).unwrap(),
-            other => other,
-        });
+        vertices.sort_by(|a, b| (a.x(), a.y()).partial_cmp(&(b.x(), b.y())).unwrap());
 
         let n = vertices.len();
-        let mut ret: Vec<Point2d> = vec![];
-        ret.resize(2 * n, Point2d::origin());
+        let mut ret: Vec<Point2d> = Vec::with_capacity(2 * n);
 
-        let mut k = 0; // k is a pointer for ret
-
-        for i in 0..n {
-            let target = vertices[i];
-            while k >= 2 && (ret[k - 1] - ret[k - 2]).det(&(target - ret[k - 1])) <= 0.0 {
-                k -= 1;
+        for &target in vertices.iter().chain(vertices.iter().rev().skip(1)) {
+            while {
+                let k = ret.len();
+                k >= 2 && (ret[k - 1] - ret[k - 2]).det(&(target - ret[k - 1])) < 0.0
+            } {
+                ret.pop();
             }
-            // regist
-            ret[k] = target;
-            k += 1;
+            ret.push(target);
         }
-        let tho = k + 1;
-        for i in (0..(n - 2)).rev() {
-            let target = vertices[i];
-            while k >= tho && (ret[k - 1] - ret[k - 2]).det(&(target - ret[k - 1])) <= 0.0 {
-                k -= 1;
-            }
-            // regist
-            ret[k] = target;
-            k += 1;
-        }
-        ret.resize(k - 1, Point2d::origin());
+        ret.pop();
 
-        Polygon2d::new(ret)
+        self.vertices = ret;
     }
     /// O(n): Winding Number Algorithm
     pub fn contains(&self, p: &Point2d) -> Contains {
@@ -435,7 +420,7 @@ mod tests {
     }
     #[test]
     fn convex_full() {
-        let polygon = Polygon2d::new(vec![
+        let mut polygon = Polygon2d::new(vec![
             Point2d::new(0.0, 0.0),
             Point2d::new(0.5, 0.5),
             Point2d::new(0.2, 0.0),
@@ -445,8 +430,25 @@ mod tests {
         ]);
         assert_eq!(polygon.n_gon(), 6);
         assert!(!polygon.is_convex());
-        let polygon = polygon.convex_full();
+        polygon.convex_full();
         assert!(polygon.is_convex());
         assert_eq!(polygon.n_gon(), 4);
+
+        let v = vec![
+            Point2d::new(0.0, 0.0),
+            Point2d::new(1.0, 2.0),
+            Point2d::new(2.0, 1.0),
+            Point2d::new(2.0, 2.0),
+            Point2d::new(1.0, 3.0),
+            Point2d::new(3.0, 3.0),
+            Point2d::new(4.0, 2.0),
+        ];
+
+        let mut polygon = Polygon2d::new(v);
+        assert_eq!(polygon.n_gon(), 7);
+        assert!(!polygon.is_convex());
+        polygon.convex_full();
+        assert!(polygon.is_convex());
+        assert_eq!(polygon.n_gon(), 5);
     }
 }
