@@ -1,12 +1,15 @@
+use super::line2d::Line2d;
 use super::line2d::EPS;
 use super::point2d::Point2d;
 
+#[derive(PartialEq, Debug)]
 pub enum CONTAINS {
     IN,
     OUT,
     ON,
 }
 
+#[derive(PartialEq, Debug, Clone, Copy)]
 pub struct Circle2d {
     center: Point2d,
     rad: f64,
@@ -73,6 +76,20 @@ impl Circle2d {
     pub fn distance_by_point(&self, p: &Point2d) -> f64 {
         ((self.center - p).l2_norm() - self.radius()).abs()
     }
+    pub fn distance_by_line(&self, line: &Line2d) -> f64 {
+        let p = line.project(&self.center());
+        if self.contains(&p) == CONTAINS::ON {
+            0.0
+        } else {
+            let d = (p - self.center()).l2_norm();
+            let ret = d - self.radius();
+            if ret > 0.0 {
+                ret
+            } else {
+                0.0
+            }
+        }
+    }
 }
 
 #[cfg(test)]
@@ -129,5 +146,24 @@ mod tests {
             circle.contains(&Point2d::new(1.0, 3.1)),
             CONTAINS::OUT
         ));
+    }
+    #[test]
+    fn distance_by_line() {
+        let circle = Circle2d::new(&Point2d::new(1.0, 2.0), 1.0);
+        let a = Point2d::new(0.0, 0.0);
+        let b = Point2d::new(10.0, 0.0);
+        assert_eq!(circle.distance_by_line(&Line2d::new(&a, &b)), 1.0);
+        let a = Point2d::new(0.0, 1.0);
+        let b = Point2d::new(10.0, 1.0);
+        assert_eq!(circle.distance_by_line(&Line2d::new(&a, &b)), 0.0);
+        let a = Point2d::new(0.0, 1.1);
+        let b = Point2d::new(10.0, 1.1);
+        assert_eq!(circle.distance_by_line(&Line2d::new(&a, &b)), 0.0);
+        let a = Point2d::new(0.0, 3.0);
+        let b = Point2d::new(10.0, 3.0);
+        assert_eq!(circle.distance_by_line(&Line2d::new(&a, &b)), 0.0);
+        let a = Point2d::new(0.0, 4.0);
+        let b = Point2d::new(10.0, 4.0);
+        assert_eq!(circle.distance_by_line(&Line2d::new(&a, &b)), 1.0);
     }
 }
