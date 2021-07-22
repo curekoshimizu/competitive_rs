@@ -1,7 +1,7 @@
 // keywords :
 
 use geometory2d::point2d::Point2d;
-use geometory2d::polygon2d::{Polygon2d, CONTAINS};
+use geometory2d::polygon2d::{Contains, Polygon2d};
 use io_lib::*;
 
 fn main() {
@@ -21,9 +21,9 @@ fn main() {
     for i in 0..m {
         let p = Point2d::new(q[2 * i], q[2 * i + 1]);
         let ret = match polygon.contains(&p) {
-            CONTAINS::IN => 2,
-            CONTAINS::ON => 1,
-            CONTAINS::OUT => 0,
+            Contains::IN => 2,
+            Contains::ON => 1,
+            Contains::OUT => 0,
         };
         println!("{}", ret);
     }

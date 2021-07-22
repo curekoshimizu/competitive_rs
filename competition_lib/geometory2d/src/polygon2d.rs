@@ -2,7 +2,7 @@ use super::circle2d::Circle2d;
 use super::line2d::{Line2d, Segment2d};
 use super::point2d::Point2d;
 
-pub enum CONTAINS {
+pub enum Contains {
     IN,
     OUT,
     ON,
@@ -47,12 +47,12 @@ impl Polygon2d {
         score == self.n_gon() as isize
     }
     /// O(n): Winding Number Algorithm
-    pub fn contains(&self, p: &Point2d) -> CONTAINS {
+    pub fn contains(&self, p: &Point2d) -> Contains {
         let mut angle = 0.0;
 
         for edge in self.edges() {
             if edge.is_point_on_segment(p) {
-                return CONTAINS::ON;
+                return Contains::ON;
             }
 
             let v1 = p - edge.start();
@@ -61,9 +61,9 @@ impl Polygon2d {
         }
 
         if angle.abs() < EPS {
-            CONTAINS::OUT
+            Contains::OUT
         } else {
-            CONTAINS::IN
+            Contains::IN
         }
     }
     pub fn edges(&self) -> impl Iterator<Item = Segment2d> {
@@ -211,23 +211,23 @@ mod tests {
         assert!(!pentagon.is_convex());
         assert!(matches!(
             pentagon.contains(&Point2d::new(0.1, 0.0)),
-            CONTAINS::ON
+            Contains::ON
         ));
         assert!(matches!(
             pentagon.contains(&Point2d::new(1.0, 0.9)),
-            CONTAINS::ON
+            Contains::ON
         ));
         assert!(matches!(
             pentagon.contains(&Point2d::new(1.0, 1.1)),
-            CONTAINS::OUT
+            Contains::OUT
         ));
         assert!(matches!(
             pentagon.contains(&Point2d::new(0.5, 0.4)),
-            CONTAINS::IN
+            Contains::IN
         ));
         assert!(matches!(
             pentagon.contains(&Point2d::new(0.5, 0.6)),
-            CONTAINS::OUT
+            Contains::OUT
         ));
 
         let s = Point2d::new(10.0, 20.0);
@@ -239,23 +239,23 @@ mod tests {
 
         assert!(matches!(
             pentagon.contains(&(Point2d::new(0.1, 0.0) + s)),
-            CONTAINS::ON
+            Contains::ON
         ));
         assert!(matches!(
             pentagon.contains(&(Point2d::new(1.0, 0.9) + s)),
-            CONTAINS::ON
+            Contains::ON
         ));
         assert!(matches!(
             pentagon.contains(&(Point2d::new(1.0, 1.1) + s)),
-            CONTAINS::OUT
+            Contains::OUT
         ));
         assert!(matches!(
             pentagon.contains(&(Point2d::new(0.5, 0.4) + s)),
-            CONTAINS::IN
+            Contains::IN
         ));
         assert!(matches!(
             pentagon.contains(&(Point2d::new(0.5, 0.6) + s)),
-            CONTAINS::OUT
+            Contains::OUT
         ));
 
         let pentagon = Polygon2d::new(vec![p1, p5, p4, p3, p2]);
@@ -265,23 +265,23 @@ mod tests {
         assert!(!pentagon.is_convex());
         assert!(matches!(
             pentagon.contains(&Point2d::new(0.1, 0.0)),
-            CONTAINS::ON
+            Contains::ON
         ));
         assert!(matches!(
             pentagon.contains(&Point2d::new(1.0, 0.9)),
-            CONTAINS::ON
+            Contains::ON
         ));
         assert!(matches!(
             pentagon.contains(&Point2d::new(1.0, 1.1)),
-            CONTAINS::OUT
+            Contains::OUT
         ));
         assert!(matches!(
             pentagon.contains(&Point2d::new(0.5, 0.4)),
-            CONTAINS::IN
+            Contains::IN
         ));
         assert!(matches!(
             pentagon.contains(&Point2d::new(0.5, 0.6)),
-            CONTAINS::OUT
+            Contains::OUT
         ));
     }
     #[test]
@@ -294,15 +294,15 @@ mod tests {
         ]);
         assert!(matches!(
             pentagon.contains(&Point2d::new(2.0, 1.0)),
-            CONTAINS::IN
+            Contains::IN
         ));
         assert!(matches!(
             pentagon.contains(&Point2d::new(0.0, 2.0)),
-            CONTAINS::ON
+            Contains::ON
         ));
         assert!(matches!(
             pentagon.contains(&Point2d::new(3.0, 2.0)),
-            CONTAINS::OUT
+            Contains::OUT
         ));
     }
     #[test]
@@ -366,15 +366,15 @@ mod tests {
         let circle = triangle.circumscribed_circle_of_triangle();
         assert!(matches!(
             circle.contains(&a),
-            super::super::circle2d::CONTAINS::ON
+            super::super::circle2d::Contains::ON
         ));
         assert!(matches!(
             circle.contains(&b),
-            super::super::circle2d::CONTAINS::ON
+            super::super::circle2d::Contains::ON
         ));
         assert!(matches!(
             circle.contains(&c),
-            super::super::circle2d::CONTAINS::ON
+            super::super::circle2d::Contains::ON
         ));
 
         let a = Point2d::new(1.0, 2.0);
@@ -384,15 +384,15 @@ mod tests {
         let circle = triangle.circumscribed_circle_of_triangle();
         assert!(matches!(
             circle.contains(&a),
-            super::super::circle2d::CONTAINS::ON
+            super::super::circle2d::Contains::ON
         ));
         assert!(matches!(
             circle.contains(&b),
-            super::super::circle2d::CONTAINS::ON
+            super::super::circle2d::Contains::ON
         ));
         assert!(matches!(
             circle.contains(&c),
-            super::super::circle2d::CONTAINS::ON
+            super::super::circle2d::Contains::ON
         ));
     }
 }

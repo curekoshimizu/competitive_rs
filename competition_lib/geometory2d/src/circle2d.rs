@@ -3,7 +3,7 @@ use super::line2d::EPS;
 use super::point2d::Point2d;
 
 #[derive(PartialEq, Debug)]
-pub enum CONTAINS {
+pub enum Contains {
     IN,
     OUT,
     ON,
@@ -70,14 +70,14 @@ impl Circle2d {
             }
         }
     }
-    pub fn contains(&self, p: &Point2d) -> CONTAINS {
+    pub fn contains(&self, p: &Point2d) -> Contains {
         let signed_dist = (self.center - p).l2_norm() - self.radius();
         if signed_dist.abs() < EPS {
-            CONTAINS::ON
+            Contains::ON
         } else if signed_dist > 0.0 {
-            CONTAINS::OUT
+            Contains::OUT
         } else {
-            CONTAINS::IN
+            Contains::IN
         }
     }
     pub fn distance_by_point(&self, p: &Point2d) -> f64 {
@@ -85,7 +85,7 @@ impl Circle2d {
     }
     pub fn intersection_point_with_line(&self, line: &Line2d) -> IntersectionPoint {
         let p = line.project(&self.center());
-        if self.contains(&p) == CONTAINS::ON {
+        if self.contains(&p) == Contains::ON {
             IntersectionPoint::ONE(p)
         } else {
             let d = (p - self.center()).l2_norm();
@@ -148,19 +148,19 @@ mod tests {
         let circle = Circle2d::new(&Point2d::new(1.0, 2.0), 1.0);
         assert!(matches!(
             circle.contains(&Point2d::new(0.0, 2.0)),
-            CONTAINS::ON
+            Contains::ON
         ));
         assert!(matches!(
             circle.contains(&Point2d::new(1.0, 3.0)),
-            CONTAINS::ON
+            Contains::ON
         ));
         assert!(matches!(
             circle.contains(&Point2d::new(1.0, 2.0)),
-            CONTAINS::IN
+            Contains::IN
         ));
         assert!(matches!(
             circle.contains(&Point2d::new(1.0, 3.1)),
-            CONTAINS::OUT
+            Contains::OUT
         ));
     }
     #[test]
@@ -185,8 +185,8 @@ mod tests {
         if let IntersectionPoint::TWO(p, q) =
             circle.intersection_point_with_line(&Line2d::new(&a, &b))
         {
-            assert!(matches!(circle.contains(&p), CONTAINS::ON));
-            assert!(matches!(circle.contains(&q), CONTAINS::ON));
+            assert!(matches!(circle.contains(&p), Contains::ON));
+            assert!(matches!(circle.contains(&q), Contains::ON));
             assert!((p - q).l2_norm() > 1.0e-3);
         } else {
             assert!(false);
