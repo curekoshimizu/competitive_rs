@@ -46,6 +46,44 @@ impl Polygon2d {
 
         score == self.n_gon() as isize
     }
+    /// O(nlog n)
+    pub fn convex_full(&self) -> Polygon2d {
+        let mut vertices = self.vertices.clone();
+
+        vertices.sort_by(|a, b| match a.x().partial_cmp(&b.x()).unwrap() {
+            std::cmp::Ordering::Equal => a.y().partial_cmp(&b.y()).unwrap(),
+            other => other,
+        });
+
+        let n = vertices.len();
+        let mut ret: Vec<Point2d> = vec![];
+        ret.resize(2 * n, Point2d::origin());
+
+        let mut k = 0; // k is a pointer for ret
+
+        for i in 0..n {
+            let target = vertices[i];
+            while k >= 2 && (ret[k - 1] - ret[k - 2]).det(&(target - ret[k - 1])) <= 0.0 {
+                k -= 1;
+            }
+            // regist
+            ret[k] = target;
+            k += 1;
+        }
+        let tho = k + 1;
+        for i in (0..(n - 2)).rev() {
+            let target = vertices[i];
+            while k >= tho && (ret[k - 1] - ret[k - 2]).det(&(target - ret[k - 1])) <= 0.0 {
+                k -= 1;
+            }
+            // regist
+            ret[k] = target;
+            k += 1;
+        }
+        ret.resize(k - 1, Point2d::origin());
+
+        Polygon2d::new(ret)
+    }
     /// O(n): Winding Number Algorithm
     pub fn contains(&self, p: &Point2d) -> Contains {
         let mut angle = 0.0;
@@ -394,5 +432,21 @@ mod tests {
             circle.contains(&c),
             super::super::circle2d::Contains::ON
         ));
+    }
+    #[test]
+    fn convex_full() {
+        let polygon = Polygon2d::new(vec![
+            Point2d::new(0.0, 0.0),
+            Point2d::new(0.5, 0.5),
+            Point2d::new(0.2, 0.0),
+            Point2d::new(1.0, -0.2),
+            Point2d::new(0.9, 1.0),
+            Point2d::new(0.0, 1.0),
+        ]);
+        assert_eq!(polygon.n_gon(), 6);
+        assert!(!polygon.is_convex());
+        let polygon = polygon.convex_full();
+        assert!(polygon.is_convex());
+        assert_eq!(polygon.n_gon(), 4);
     }
 }
