@@ -1,16 +1,25 @@
 // keywords :
 
-use argio::argio;
+use geometory2d::point2d::Point2d;
+use geometory2d::polygon2d::Polygon2d;
+use io_lib::*;
 
-#[argio]
-fn main(n: u64, _a: [u64; n]) {
-    todo!();
+fn main() {
+    input! {
+        p: [f64; 6],
+    }
+
+    let p1 = Point2d::new(p[0], p[1]);
+    let p2 = Point2d::new(p[2], p[3]);
+    let p3 = Point2d::new(p[4], p[5]);
+
+    let poly = Polygon2d::new(vec![p1, p2, p3]);
+    let circle = poly.incircle_of_triangle();
+
+    println!(
+        "{} {} {}",
+        &circle.center().x(),
+        &circle.center().y(),
+        &circle.radius()
+    );
 }
-
-// use io_lib::*;
-//
-// fn main() {
-//     input! {
-//         n: u64,
-//     }
-// }

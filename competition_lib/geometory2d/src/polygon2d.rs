@@ -1,4 +1,5 @@
-use super::line2d::Segment2d;
+use super::circle2d::Circle2d;
+use super::line2d::{Line2d, Segment2d};
 use super::point2d::Point2d;
 
 pub enum CONTAINS {
@@ -79,6 +80,40 @@ impl Polygon2d {
     pub fn edge_pair_iter(&self) -> impl Iterator<Item = (Segment2d, Segment2d)> {
         self.edges()
             .zip(self.edges().skip(1).chain(self.edges().take(1)))
+    }
+    pub fn incircle_of_triangle(&self) -> Circle2d {
+        assert_eq!(self.n_gon(), 3);
+
+        let a = (self.vertices[2] - self.vertices[1]).l2_norm();
+        let b = (self.vertices[0] - self.vertices[2]).l2_norm();
+        let c = (self.vertices[1] - self.vertices[0]).l2_norm();
+        let sum = a + b + c;
+
+        let center =
+            a * &self.vertices[0] / sum + b * &self.vertices[1] / sum + c * &self.vertices[2] / sum;
+
+        let line = Line2d::new(&self.vertices[0], &self.vertices[1]);
+        let radius = line.distance_by_point(&center);
+
+        Circle2d::new(&center, radius)
+    }
+    pub fn circumscribed_circle_of_triangle(&self) -> Circle2d {
+        assert_eq!(self.n_gon(), 3);
+
+        let line = Line2d::new(&self.vertices[0], &self.vertices[1]);
+        let start = (self.vertices[0] + self.vertices[1]) / 2.0;
+        let end = start + line.vector().rotate90();
+        let bisector1 = Line2d::new(&start, &end);
+
+        let line = Line2d::new(&self.vertices[1], &self.vertices[2]);
+        let start = (self.vertices[1] + self.vertices[2]) / 2.0;
+        let end = start + line.vector().rotate90();
+        let bisector2 = Line2d::new(&start, &end);
+
+        let center = bisector1.intersection_point_with_line(&bisector2).unwrap();
+        let radius = (center - self.vertices[0]).l2_norm();
+
+        Circle2d::new(&center, radius)
     }
 }
 
@@ -249,7 +284,6 @@ mod tests {
             CONTAINS::OUT
         ));
     }
-
     #[test]
     fn contains() {
         let pentagon = Polygon2d::new(vec![
@@ -269,6 +303,96 @@ mod tests {
         assert!(matches!(
             pentagon.contains(&Point2d::new(3.0, 2.0)),
             CONTAINS::OUT
+        ));
+    }
+    #[test]
+    fn incircle_of_triangle() {
+        const EPS: f64 = 1.0e-5;
+
+        let a = Point2d::new(1.0, 2.0);
+        let b = Point2d::new(10.0, -2.0);
+        let c = Point2d::new(7.0, 4.0);
+        let triangle = Polygon2d::new(vec![a, b, c]);
+        let circle = triangle.incircle_of_triangle();
+        assert!(
+            (Line2d::new(&a, &b).distance_by_point(&circle.center()) - circle.radius()).abs() < EPS
+        );
+        assert!(
+            (Line2d::new(&b, &c).distance_by_point(&circle.center()) - circle.radius()).abs() < EPS
+        );
+        assert!(
+            (Line2d::new(&c, &a).distance_by_point(&circle.center()) - circle.radius()).abs() < EPS
+        );
+
+        let v1_unit = (b - a).unit_vector();
+        let v2_unit = (c - a).unit_vector();
+        let end = a + v1_unit + v2_unit;
+        let line = Line2d::new(&a, &end); // bisector of an angle
+        assert!(line.is_point_on_line(&circle.center()));
+
+        let v1_unit = (c - b).unit_vector();
+        let v2_unit = (a - b).unit_vector();
+        let end = b + v1_unit + v2_unit;
+        let line = Line2d::new(&b, &end); // bisector of an angle
+        assert!(line.is_point_on_line(&circle.center()));
+
+        let v1_unit = (a - c).unit_vector();
+        let v2_unit = (b - c).unit_vector();
+        let end = c + v1_unit + v2_unit;
+        let line = Line2d::new(&c, &end); // bisector of an angle
+        assert!(line.is_point_on_line(&circle.center()));
+
+        let a = Point2d::new(1.0, 2.0);
+        let b = Point2d::new(-3.0, 5.0);
+        let c = Point2d::new(0.0, -2.0);
+        let triangle = Polygon2d::new(vec![a, b, c]);
+        let circle = triangle.incircle_of_triangle();
+        assert!(
+            (Line2d::new(&a, &b).distance_by_point(&circle.center()) - circle.radius()).abs() < EPS
+        );
+        assert!(
+            (Line2d::new(&b, &c).distance_by_point(&circle.center()) - circle.radius()).abs() < EPS
+        );
+        assert!(
+            (Line2d::new(&c, &a).distance_by_point(&circle.center()) - circle.radius()).abs() < EPS
+        );
+    }
+    #[test]
+    fn circumscribed_circle_of_triangle() {
+        let a = Point2d::new(1.0, 2.0);
+        let b = Point2d::new(10.0, -2.0);
+        let c = Point2d::new(7.0, 4.0);
+        let triangle = Polygon2d::new(vec![a, b, c]);
+        let circle = triangle.circumscribed_circle_of_triangle();
+        assert!(matches!(
+            circle.contains(&a),
+            super::super::circle2d::CONTAINS::ON
+        ));
+        assert!(matches!(
+            circle.contains(&b),
+            super::super::circle2d::CONTAINS::ON
+        ));
+        assert!(matches!(
+            circle.contains(&c),
+            super::super::circle2d::CONTAINS::ON
+        ));
+
+        let a = Point2d::new(1.0, 2.0);
+        let b = Point2d::new(-3.0, 5.0);
+        let c = Point2d::new(0.0, -2.0);
+        let triangle = Polygon2d::new(vec![a, b, c]);
+        let circle = triangle.circumscribed_circle_of_triangle();
+        assert!(matches!(
+            circle.contains(&a),
+            super::super::circle2d::CONTAINS::ON
+        ));
+        assert!(matches!(
+            circle.contains(&b),
+            super::super::circle2d::CONTAINS::ON
+        ));
+        assert!(matches!(
+            circle.contains(&c),
+            super::super::circle2d::CONTAINS::ON
         ));
     }
 }

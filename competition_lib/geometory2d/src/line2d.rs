@@ -215,7 +215,9 @@ impl<'a> Line2dBase<'a> {
 
         let t = b / a;
 
-        if !t.is_normal() {
+        if t.is_finite() {
+            Some(line.start + t * vec2)
+        } else {
             if self.is_on_segment(&line.start) {
                 Some(*line.start)
             } else if self.is_on_segment(&line.end) {
@@ -227,8 +229,6 @@ impl<'a> Line2dBase<'a> {
             } else {
                 None
             }
-        } else {
-            Some(line.start + t * vec2)
         }
     }
 }
