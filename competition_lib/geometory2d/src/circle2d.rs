@@ -106,6 +106,22 @@ impl Circle2d {
             IntersectionPoint::TWO(_, _) => 0.0,
         }
     }
+    pub fn intersection_point_with_circle(&self, circle: &Circle2d) -> IntersectionPoint {
+        // |c1 - p|^2 - |c2 - p|^2 = r1^2 - r2^2
+        // 2(c1 - c2, p) = |c1|^2 - |c2|^2
+        // a x + b y + c = 0
+        let a = 2.0 * (self.center().x() - circle.center().x());
+        let b = 2.0 * (self.center().y() - circle.center().y());
+
+        let c = -self.center().l2_norm_squared()
+            + circle.center().l2_norm_squared()
+            + self.radius() * self.radius()
+            - circle.radius() * circle.radius();
+
+        let (p1, p2) = Line2d::generate_points_from_equation(a, b, c);
+        let line = Line2d::new(&p1, &p2);
+        self.intersection_point_with_line(&line)
+    }
 }
 
 #[cfg(test)]
@@ -223,5 +239,60 @@ mod tests {
         let a = Point2d::new(0.0, 4.0);
         let b = Point2d::new(10.0, 4.0);
         assert_eq!(circle.distance_by_line(&Line2d::new(&a, &b)), 1.0);
+    }
+    #[test]
+    fn intersection_point_with_circle() {
+        fn check_body(c1: &Circle2d, c2: &Circle2d) {
+            match c1.intersection_point_with_circle(&c2) {
+                IntersectionPoint::EMPTY => {
+                    let num = c1.num_common_tangents(&c2);
+                    assert!(num == 0 || num == 4);
+                }
+                IntersectionPoint::ONE(p) => {
+                    assert!(c1.distance_by_point(&p) < EPS);
+                    assert!(c2.distance_by_point(&p) < EPS);
+                    let num = c1.num_common_tangents(&c2);
+                    assert!(num == 1 || num == 3);
+                }
+                IntersectionPoint::TWO(p, q) => {
+                    assert!(c1.distance_by_point(&p) < EPS);
+                    assert!(c2.distance_by_point(&p) < EPS);
+                    assert!(c1.distance_by_point(&q) < EPS);
+                    assert!(c2.distance_by_point(&q) < EPS);
+                }
+            }
+        }
+        fn check(c1: &Circle2d, c2: &Circle2d) {
+            check_body(c1, c2);
+            check_body(c2, c1);
+        }
+
+        let circle1 = Circle2d::new(&Point2d::new(1.0, 2.0), 1.0);
+        let circle2 = Circle2d::new(&Point2d::new(10.0, 2.0), 0.1);
+        check(&circle1, &circle2);
+        check(&circle1, &circle2);
+
+        let circle2 = Circle2d::new(&Point2d::new(2.2, 2.0), 0.1);
+        check(&circle1, &circle2);
+
+        let circle2 = Circle2d::new(&Point2d::new(3.0, 2.0), 1.0);
+        check(&circle1, &circle2);
+
+        let circle2 = Circle2d::new(&Point2d::new(3.0, 2.0), 1.0);
+        check(&circle1, &circle2);
+
+        let circle2 = Circle2d::new(&Point2d::new(2.0, 2.0), 0.1);
+        check(&circle1, &circle2);
+
+        let circle2 = Circle2d::new(&Point2d::new(1.9, 2.0), 0.1);
+        check(&circle1, &circle2);
+
+        let circle1 = Circle2d::new(&Point2d::new(5.0, 4.0), 10.0);
+        let circle2 = Circle2d::new(&Point2d::new(10.0, 2.0), 8.0);
+        check(&circle1, &circle2);
+
+        let circle1 = Circle2d::new(&Point2d::new(5.0, 4.0), 100.0);
+        let circle2 = Circle2d::new(&Point2d::new(10.0, 2.0), 8.0);
+        check(&circle1, &circle2);
     }
 }

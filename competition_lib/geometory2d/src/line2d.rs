@@ -11,7 +11,7 @@ impl<'a> Line2d<'a> {
         Line2d(Line2dBase::new(start, end))
     }
     /// ax + by + c = 0--> (p1, p2)
-    pub fn from_equation(a: f64, b: f64, c: f64) -> (Point2d, Point2d) {
+    pub fn generate_points_from_equation(a: f64, b: f64, c: f64) -> (Point2d, Point2d) {
         // ax + by + c = 0
 
         if c.abs() < EPS {
@@ -323,9 +323,9 @@ mod tests {
         assert_eq!(lines.num_lines(), 0);
     }
     #[test]
-    fn from_equation() {
+    fn generate_points_from_equation() {
         fn check(a: f64, b: f64, c: f64) {
-            let (p, q) = Line2d::from_equation(a, b, c);
+            let (p, q) = Line2d::generate_points_from_equation(a, b, c);
             assert!((a * p.x() + b * p.y() + c) < EPS);
             assert!((a * q.x() + b * q.y() + c) < EPS);
         }
