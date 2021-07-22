@@ -10,6 +10,43 @@ impl<'a> Line2d<'a> {
     pub fn new(start: &'a Point2d, end: &'a Point2d) -> Self {
         Line2d(Line2dBase::new(start, end))
     }
+    /// ax + by + c = 0--> (p1, p2)
+    pub fn from_equation(a: f64, b: f64, c: f64) -> (Point2d, Point2d) {
+        // ax + by + c = 0
+
+        if c.abs() < EPS {
+            // case1. c == 0
+            (
+                Point2d::origin(),
+                Point2d::origin() + Vec2d::new(a, b).rotate90(),
+            )
+        } else {
+            // case2. c != 0
+            // -ax/c - by/c = 1
+            // px + qy = 1 --> (1/p, 1), (1, 1/q)
+            let p = -a / c;
+            let q = -b / c;
+            let p_abs = p.abs();
+            let q_abs = q.abs();
+
+            if p_abs < q_abs && p_abs < EPS {
+                // case2.1 p == 0 => qy = 1 => (0, 1/q), (1, 1/q)
+                (
+                    Point2d::new(0.0, 1.0 / q),
+                    Point2d::new(0.0, 1.0 / q) + Vec2d::new(a, b).rotate90(),
+                )
+            } else if q_abs < p_abs && q_abs < EPS {
+                // case2.2 p == 0 => px = 1 => (1/p, 0), (1/q, 1)
+                (
+                    Point2d::new(1.0 / p, 0.0),
+                    Point2d::new(1.0 / p, 1.0) + Vec2d::new(a, b).rotate90(),
+                )
+            } else {
+                // case2.3 px + qy = 1 --> (1/p, 1), (1, 1/q)
+                (Point2d::new(1.0 / p, 0.0), Point2d::new(0.0, 1.0 / q))
+            }
+        }
+    }
     pub fn start(&self) -> &'a Point2d {
         self.0.start()
     }
@@ -284,6 +321,30 @@ mod tests {
 
         let lines = SegmentPath2d::new(vec![]);
         assert_eq!(lines.num_lines(), 0);
+    }
+    #[test]
+    fn from_equation() {
+        fn check(a: f64, b: f64, c: f64) {
+            let (p, q) = Line2d::from_equation(a, b, c);
+            assert!((a * p.x() + b * p.y() + c) < EPS);
+            assert!((a * q.x() + b * q.y() + c) < EPS);
+        }
+
+        check(0.2, 0.3, 0.0);
+        check(1.0, 0.0, 0.0);
+        check(0.0, 1.0, 0.0);
+
+        check(0.2, 0.3, 1.0);
+        check(1.0, 0.0, 1.0);
+        check(0.0, 1.0, 1.0);
+
+        check(0.2, 0.3, 10.0);
+        check(1.0, 0.0, 10.0);
+        check(0.0, 1.0, 10.0);
+
+        check(0.2, 0.3, 1.0e10);
+        check(1.0, 0.0, 1.0e10);
+        check(0.0, 1.0, 1.0e10);
     }
     #[test]
     fn point_projection() {
