@@ -75,6 +75,27 @@ mod tests {
         assert_eq!(heap.pop(), Some(TotalOrd(0.0)));
     }
     #[test]
+    fn rev_heap() {
+        use std::cmp::Reverse;
+        use std::collections::BinaryHeap;
+
+        let mut heap = BinaryHeap::new();
+
+        heap.push(Reverse(TotalOrd(0.0)));
+        heap.push(Reverse(TotalOrd(10.0)));
+        heap.push(Reverse(TotalOrd(3.0)));
+        heap.push(Reverse(TotalOrd(5.0)));
+        heap.push(Reverse(TotalOrd(1.0)));
+
+        assert_eq!(heap.peek(), Some(&Reverse(TotalOrd(0.0))));
+
+        assert_eq!(heap.pop(), Some(Reverse(TotalOrd(0.0))));
+        assert_eq!(heap.pop(), Some(Reverse(TotalOrd(1.0))));
+        assert_eq!(heap.pop(), Some(Reverse(TotalOrd(3.0))));
+        assert_eq!(heap.pop(), Some(Reverse(TotalOrd(5.0))));
+        assert_eq!(heap.pop(), Some(Reverse(TotalOrd(10.0))));
+    }
+    #[test]
     fn vector_sort() {
         let mut v = vec![
             TotalOrd(0.0),
