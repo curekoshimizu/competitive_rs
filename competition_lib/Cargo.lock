@@ -23,5 +23,9 @@ name = "prime"
 version = "0.1.0"
 
 [[package]]
+name = "search_lib"
+version = "0.1.0"
+
+[[package]]
 name = "total_order"
 version = "0.1.0"
