@@ -3,6 +3,10 @@
 version = 3
 
 [[package]]
+name = "collection_lib"
+version = "0.1.0"
+
+[[package]]
 name = "gcd"
 version = "0.1.0"
 

@@ -7,4 +7,5 @@ members = [
     "geometory3d",
     "total_order",
     "search_lib",
+    "collection_lib",
 ]
