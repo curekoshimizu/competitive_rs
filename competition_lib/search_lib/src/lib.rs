@@ -1,17 +1,32 @@
-use std::cmp::Ordering;
-
-pub enum ReturnIndexPolicy {
-    AllowBoundary,     // same as lower_bound
-    GreaterThanTarget, // same as upper_bound
+/// pred is a function : [start, end) -> bool
+/// This function is used for [false, false, ... true, true] to get index where pred(index) = true.
+/// if f( [start, end) ) == {false}, then it will return None
+/// let position = binary_search_position(start, end, pred);
+/// assert!(  ! pred[position -1 ]  );
+/// assert!(  pred[position + 0]  );
+/// assert!(  pred[position + 1] );
+pub fn binary_search_position<F>(start: u64, end: u64, pred: F) -> Option<u64>
+where
+    F: Fn(u64) -> bool,
+{
+    let mut low = start;
+    let mut high = end;
+    while low != high {
+        let mid = low.saturating_add(high) / 2;
+        if pred(mid) {
+            high = mid;
+        } else {
+            low = mid + 1;
+        }
+    }
+    if low < end {
+        Some(low)
+    } else {
+        None
+    }
 }
 
 pub trait BinarySearch<T> {
-    fn binary_search_position(&self, x: &T, policy: ReturnIndexPolicy) -> Option<usize> {
-        match policy {
-            ReturnIndexPolicy::AllowBoundary => self.lower_bound(x),
-            ReturnIndexPolicy::GreaterThanTarget => self.upper_bound(x),
-        }
-    }
     ///   returned index of T is is equal to or greater than search_target.
     ///   if search_target is too big, it will return None.
     ///
@@ -31,46 +46,18 @@ pub trait BinarySearch<T> {
 
 impl<T: Ord> BinarySearch<T> for [T] {
     fn lower_bound(&self, x: &T) -> Option<usize> {
-        let mut low = 0;
-        let mut high = self.len();
-
-        while low != high {
-            let mid = (low + high) / 2;
-            match self[mid].cmp(x) {
-                Ordering::Less => {
-                    low = mid + 1;
-                }
-                Ordering::Equal | Ordering::Greater => {
-                    high = mid;
-                }
-            }
-        }
-        if low < self.len() {
-            Some(low)
-        } else {
-            None
+        let pred = |i| self[i as usize] >= *x;
+        match binary_search_position(0, self.len() as u64, pred) {
+            Some(x) => Some(x as usize),
+            None => None,
         }
     }
 
     fn upper_bound(&self, x: &T) -> Option<usize> {
-        let mut low = 0;
-        let mut high = self.len();
-
-        while low != high {
-            let mid = (low + high) / 2;
-            match self[mid].cmp(x) {
-                Ordering::Less | Ordering::Equal => {
-                    low = mid + 1;
-                }
-                Ordering::Greater => {
-                    high = mid;
-                }
-            }
-        }
-        if low < self.len() {
-            Some(low)
-        } else {
-            None
+        let pred = |i| self[i as usize] > *x;
+        match binary_search_position(0, self.len() as u64, pred) {
+            Some(x) => Some(x as usize),
+            None => None,
         }
     }
 }
@@ -107,7 +94,7 @@ mod tests {
         target[index..].iter().all(|&x| x >= 2);
     }
     #[test]
-    fn binary_search() {
+    fn binary_search_position() {
         let vec = vec![1, 2, 4, 6, 7, 12, 54, 60, 100];
 
         for target in 2..20 {
