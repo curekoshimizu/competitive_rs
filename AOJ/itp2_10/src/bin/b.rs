@@ -1,16 +1,13 @@
 // keywords :
 
-use argio::argio;
+use io_lib::*;
 
-#[argio]
-fn main(n: u64, _a: [u64; n]) {
-    todo!();
+fn main() {
+    input! {
+        a: u32,
+        b: u32,
+    }
+    println!("{:032b}", a & b);
+    println!("{:032b}", a | b);
+    println!("{:032b}", a ^ b);
 }
-
-// use io_lib::*;
-//
-// fn main() {
-//     input! {
-//         n: u64,
-//     }
-// }
