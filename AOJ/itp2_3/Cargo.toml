@@ -1,0 +1,18 @@
+[package]
+name = "itp2_3"
+version = "0.1.0"
+edition = "2018"
+
+# dependencies added to new project
+[dependencies]
+io_lib = { path = "../../competition_lib/io_lib" }
+# gcd = { path = "../../competition_lib/gcd" }
+# geometory2d = { path = "../../competition_lib/geometory2d" }
+# geometory3d = { path = "../../competition_lib/geometory3d" }
+proconio = { version = "0.4.3", features = ["derive"] }
+# itertools = "0.10.1"
+argio = "0.2.0"
+
+[profile.release]
+lto = true
+panic = 'abort'
