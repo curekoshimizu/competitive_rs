@@ -1,16 +1,16 @@
 // keywords :
 
-use argio::argio;
+use io_lib::*;
 
-#[argio]
-fn main(n: u64, _a: [u64; n]) {
-    todo!();
+fn main() {
+    input! {
+        n: usize,
+        a: [(usize, usize, String, usize, String); n],
+    }
+
+    let mut a = a;
+    a.sort();
+    for x in a {
+        println!("{} {} {} {} {}", x.0, x.1, x.2, x.3, x.4);
+    }
 }
-
-// use io_lib::*;
-//
-// fn main() {
-//     input! {
-//         n: u64,
-//     }
-// }
