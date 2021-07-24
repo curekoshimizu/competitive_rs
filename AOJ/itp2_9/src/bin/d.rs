@@ -1,16 +1,19 @@
 // keywords :
 
-use argio::argio;
+use io_lib::*;
+use std::collections::BTreeSet;
 
-#[argio]
-fn main(n: u64, _a: [u64; n]) {
-    todo!();
+fn main() {
+    input! {
+        n: u64,
+        a: [u64; n],
+        m: u64,
+        b: [u64; m],
+    }
+    let a: BTreeSet<u64> = a.into_iter().collect();
+    let b: BTreeSet<u64> = b.into_iter().collect();
+
+    for x in a.symmetric_difference(&b) {
+        println!("{}", x);
+    }
 }
-
-// use io_lib::*;
-//
-// fn main() {
-//     input! {
-//         n: u64,
-//     }
-// }
