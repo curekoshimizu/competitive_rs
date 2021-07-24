@@ -1,16 +1,34 @@
 // keywords :
 
-use argio::argio;
+use io_lib::*;
+use std::collections::BinaryHeap;
 
-#[argio]
-fn main(n: u64, _a: [u64; n]) {
-    todo!();
+fn main() {
+    let mut sc = Scanner::new(std::io::stdin().lock());
+
+    let n = sc.next::<usize>().unwrap();
+    let mut vec = vec![BinaryHeap::new(); n];
+    let q = sc.next::<usize>().unwrap();
+
+    for _ in 0..q {
+        let q = sc.next::<u32>().unwrap();
+        match q {
+            0 => {
+                let t = sc.next::<usize>().unwrap();
+                let x = sc.next::<i64>().unwrap();
+                vec[t].push(x);
+            }
+            1 => {
+                let t = sc.next::<usize>().unwrap();
+                if !vec[t].is_empty() {
+                    println!("{}", vec[t].peek().unwrap());
+                }
+            }
+            2 => {
+                let t = sc.next::<usize>().unwrap();
+                vec[t].pop();
+            }
+            _ => panic!("!"),
+        }
+    }
 }
-
-// use io_lib::*;
-//
-// fn main() {
-//     input! {
-//         n: u64,
-//     }
-// }
