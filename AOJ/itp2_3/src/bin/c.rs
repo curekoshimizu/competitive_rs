@@ -1,16 +1,17 @@
 // keywords :
 
-use argio::argio;
+use io_lib::*;
 
-#[argio]
-fn main(n: u64, _a: [u64; n]) {
-    todo!();
+fn main() {
+    input! {
+        n: usize,
+        a: [i64; n],
+        q: usize,
+        vec: [(usize, usize, i64); q],
+    }
+
+    for (x, y, k) in vec {
+        let count = a[x..y].iter().filter(|&&i| i == k).count();
+        println!("{}", count);
+    }
 }
-
-// use io_lib::*;
-//
-// fn main() {
-//     input! {
-//         n: u64,
-//     }
-// }
