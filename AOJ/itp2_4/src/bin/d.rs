@@ -1,16 +1,20 @@
 // keywords :
 
-use argio::argio;
+use io_lib::*;
 
-#[argio]
-fn main(n: u64, _a: [u64; n]) {
-    todo!();
+fn main() {
+    input! {
+        n: u64,
+        a: [i64; n],
+    }
+
+    let mut a = a;
+    a.dedup();
+    println!(
+        "{}",
+        a.iter()
+            .map(|&i| i.to_string())
+            .collect::<Vec<String>>()
+            .join(" ")
+    );
 }
-
-// use io_lib::*;
-//
-// fn main() {
-//     input! {
-//         n: u64,
-//     }
-// }
