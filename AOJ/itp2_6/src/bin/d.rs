@@ -1,16 +1,19 @@
 // keywords :
 
-use argio::argio;
+use io_lib::*;
+use search_lib::BinarySearch;
 
-#[argio]
-fn main(n: u64, _a: [u64; n]) {
-    todo!();
+fn main() {
+    input! {
+        n: u64,
+        a: [i64; n],
+        m: usize,
+        q: [i64; m],
+    }
+
+    for x in q {
+        let ret1 = a.lower_bound(&x).unwrap_or(a.len());
+        let ret2 = a.upper_bound(&x).unwrap_or(a.len());
+        println!("{} {}", ret1, ret2);
+    }
 }
-
-// use io_lib::*;
-//
-// fn main() {
-//     input! {
-//         n: u64,
-//     }
-// }
