@@ -6,6 +6,7 @@ edition = "2018"
 # dependencies added to new project
 [dependencies]
 io_lib = { path = "../../competition_lib/io_lib" }
+search_lib = { path = "../../competition_lib/search_lib/" }
 # gcd = { path = "../../competition_lib/gcd" }
 # geometory2d = { path = "../../competition_lib/geometory2d" }
 # geometory3d = { path = "../../competition_lib/geometory3d" }
