@@ -1,7 +1,6 @@
 [package]
 name = "abc152"
 version = "0.1.0"
-authors = ["curekoshimizu <shugo@xxxmanabe.sakura.ne.jp>"]
 edition = "2018"
 
 # dependencies added to new project
